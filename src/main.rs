@@ -18,44 +18,14 @@ fn main() {
     run::<Test>(event_loop, window);
 }
 
-struct Test {
-    pipeline: triangle::Pipeline,
-}
+struct Test {}
 
 impl Application for Test {
-    fn init(device: &Device, queue: &Queue, surface: &mut Surface) -> Self {
-        Self {
-            pipeline: triangle::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb),
-        }
+    fn init() -> Self {
+        Self {}
     }
 
     fn update(&mut self, event: WindowEvent, control_flow: &mut ControlFlow) {}
 
-    fn render(
-        &mut self,
-        device: &wgpu::Device,
-        queue: &wgpu::Queue,
-        surface: &mut surface::Surface,
-    ) {
-        let swap_chain = device.create_swap_chain(
-            &surface.surface,
-            &wgpu::SwapChainDescriptor {
-                usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
-                format: wgpu::TextureFormat::Bgra8UnormSrgb,
-                width: surface.width(),
-                height: surface.height(),
-                present_mode: wgpu::PresentMode::Fifo,
-            },
-        );
-
-        let frame = swap_chain.get_current_frame().expect("Next frame");
-
-        let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-            label: Some("Render Encoder"),
-        });
-
-        self.pipeline.draw(&mut encoder, &frame);
-
-        queue.submit(std::iter::once(encoder.finish()));
-    }
+    fn render(&mut self) {}
 }

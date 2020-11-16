@@ -5,18 +5,9 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
 pub trait Application: 'static {
-    fn init(
-        device: &wgpu::Device,
-        queue: &wgpu::Queue,
-        surface: &mut super::surface::Surface,
-    ) -> Self;
+    fn init() -> Self;
     fn update(&mut self, event: WindowEvent, control_flow: &mut ControlFlow);
-    fn render(
-        &mut self,
-        device: &wgpu::Device,
-        queue: &wgpu::Queue,
-        surface: &mut super::surface::Surface,
-    );
+    fn render(&mut self);
 }
 
 pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
@@ -25,41 +16,9 @@ pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
 
 // Add compositor as type argument to allow for use of standardised rendering in app.render()
 pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Window) {
-    let instance = wgpu::Instance::new(wgpu::BackendBit::PRIMARY);
+    let mut compositor = super::compositor::Compositor::new(&window).await;
 
-    let (device, queue, mut surface) = {
-        let surface = unsafe { instance.create_surface(&window) };
-        let adapter = instance
-            .request_adapter(&wgpu::RequestAdapterOptions {
-                power_preference: wgpu::PowerPreference::default(),
-                compatible_surface: Some(&surface),
-            })
-            .await
-            .unwrap();
-        let (device, queue) = adapter
-            .request_device(
-                &wgpu::DeviceDescriptor {
-                    features: wgpu::Features::empty(),
-                    limits: wgpu::Limits::default(),
-                    shader_validation: true,
-                },
-                None,
-            )
-            .await
-            .unwrap();
-
-        let surface = super::surface::Surface::new(
-            &device,
-            surface,
-            window.inner_size().width,
-            window.inner_size().height,
-            PresentMode::Mailbox,
-        );
-
-        (device, queue, surface)
-    };
-
-    let mut app = App::init(&device, &queue, &mut surface);
+    let mut app = App::init();
     // app should have state, which it then uses to render to the window
 
     event_loop.run(move |event, _, control_flow| {
@@ -79,10 +38,10 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
                             _ => {}
                         },
                         WindowEvent::Resized(new_size) => {
-                            surface.resize(&device, new_size.width, new_size.height)
+                            compositor.resize_window(new_size.width, new_size.height)
                         }
                         WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                            surface.resize(&device, new_inner_size.width, new_inner_size.height)
+                            compositor.resize_window(new_inner_size.width, new_inner_size.height);
                         }
                         _ => {}
                     }
@@ -94,7 +53,8 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
             Event::Resumed => {}
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
-                app.render(&device, &queue, &mut surface);
+                app.render();
+                compositor.draw();
             }
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}
