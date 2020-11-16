@@ -1,9 +1,17 @@
+use crate::vertex::Vertex;
+use wgpu::util::DeviceExt;
+
 pub struct Pipeline {
     pub render_pipeline: wgpu::RenderPipeline,
+    vertex_buffer: wgpu::Buffer,
 }
 
 impl Pipeline {
-    pub fn new(device: &wgpu::Device, format: wgpu::TextureFormat) -> Self {
+    pub fn new(
+        device: &wgpu::Device,
+        format: wgpu::TextureFormat,
+        vertices: &[super::vertex::Vertex],
+    ) -> Self {
         let vs_src = include_str!("shaders/triangle.vert");
         let fs_src = include_str!("shaders/triangle.frag");
         let mut compiler = shaderc::Compiler::new().unwrap();
@@ -71,15 +79,24 @@ impl Pipeline {
             }],
             depth_stencil_state: None,
             vertex_state: wgpu::VertexStateDescriptor {
-                index_format: wgpu::IndexFormat::Uint32,
-                vertex_buffers: &[],
+                index_format: wgpu::IndexFormat::Uint16,
+                vertex_buffers: &[Vertex::desc()],
             },
             sample_count: 1,
             sample_mask: !0,
             alpha_to_coverage_enabled: false,
         });
 
-        Self { render_pipeline }
+        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Triangle Vertex Buffer"),
+            contents: bytemuck::cast_slice(vertices),
+            usage: wgpu::BufferUsage::VERTEX,
+        });
+
+        Self {
+            render_pipeline,
+            vertex_buffer,
+        }
     }
 
     pub fn draw(&self, encoder: &mut wgpu::CommandEncoder, target: &wgpu::SwapChainFrame) {
@@ -102,6 +119,9 @@ impl Pipeline {
             });
 
             render_pass.set_pipeline(&self.render_pipeline);
+            render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+
+            // TODO: create buffer wrapper with num vertices?
             render_pass.draw(0..3, 0..1);
         }
     }

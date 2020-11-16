@@ -25,11 +25,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add first modular version, simple triangle render">
-      <change afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compositor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/triangle.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/triangle.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/triangle.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/triangle.vert" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vertex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vertex.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +175,7 @@
       <workItem from="1605385982134" duration="9529000" />
       <workItem from="1605397741606" duration="3917000" />
       <workItem from="1605469279613" duration="6355000" />
-      <workItem from="1605539774793" duration="1908000" />
+      <workItem from="1605539774793" duration="7994000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -291,22 +295,22 @@
       <screen x="0" y="0" width="5120" height="1440" />
     </state>
     <state x="2340" y="460" key="FileChooserDialogImpl/0.0.5120.1440@0.0.5120.1440" timestamp="1604628297553" />
-    <state width="2514" height="400" key="GridCell.Tab.0.bottom" timestamp="1605541674455">
+    <state width="2514" height="400" key="GridCell.Tab.0.bottom" timestamp="1605550120067">
       <screen x="0" y="0" width="5120" height="1440" />
     </state>
-    <state width="2514" height="400" key="GridCell.Tab.0.bottom/0.0.5120.1440@0.0.5120.1440" timestamp="1605541674455" />
-    <state width="2514" height="400" key="GridCell.Tab.0.center" timestamp="1605541674455">
+    <state width="2514" height="400" key="GridCell.Tab.0.bottom/0.0.5120.1440@0.0.5120.1440" timestamp="1605550120067" />
+    <state width="2514" height="400" key="GridCell.Tab.0.center" timestamp="1605550120066">
       <screen x="0" y="0" width="5120" height="1440" />
     </state>
-    <state width="2514" height="400" key="GridCell.Tab.0.center/0.0.5120.1440@0.0.5120.1440" timestamp="1605541674455" />
-    <state width="2514" height="400" key="GridCell.Tab.0.left" timestamp="1605541674455">
+    <state width="2514" height="400" key="GridCell.Tab.0.center/0.0.5120.1440@0.0.5120.1440" timestamp="1605550120066" />
+    <state width="2514" height="400" key="GridCell.Tab.0.left" timestamp="1605550120066">
       <screen x="0" y="0" width="5120" height="1440" />
     </state>
-    <state width="2514" height="400" key="GridCell.Tab.0.left/0.0.5120.1440@0.0.5120.1440" timestamp="1605541674455" />
-    <state width="2514" height="400" key="GridCell.Tab.0.right" timestamp="1605541674455">
+    <state width="2514" height="400" key="GridCell.Tab.0.left/0.0.5120.1440@0.0.5120.1440" timestamp="1605550120066" />
+    <state width="2514" height="400" key="GridCell.Tab.0.right" timestamp="1605550120066">
       <screen x="0" y="0" width="5120" height="1440" />
     </state>
-    <state width="2514" height="400" key="GridCell.Tab.0.right/0.0.5120.1440@0.0.5120.1440" timestamp="1605541674455" />
+    <state width="2514" height="400" key="GridCell.Tab.0.right/0.0.5120.1440@0.0.5120.1440" timestamp="1605550120066" />
     <state x="2140" y="466" key="IDE.errors.dialog" timestamp="1601656968496">
       <screen x="0" y="0" width="5120" height="1440" />
     </state>

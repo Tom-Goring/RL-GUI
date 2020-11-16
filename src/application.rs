@@ -4,6 +4,8 @@ use winit::event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEve
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
+use crate::application_state::ApplicationState;
+
 pub trait Application: 'static {
     fn init() -> Self;
     fn update(&mut self, event: WindowEvent, control_flow: &mut ControlFlow);
@@ -18,6 +20,8 @@ pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
 pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Window) {
     let mut compositor = super::compositor::Compositor::new(&window).await;
 
+    let mut state = ApplicationState::new();
+
     let mut app = App::init();
     // app should have state, which it then uses to render to the window
 
@@ -26,24 +30,19 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
         match event {
             Event::NewEvents(_) => {}
             Event::WindowEvent { event, window_id } => {
-                if window.id() == window_id {
-                    match event {
-                        WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
-                        WindowEvent::KeyboardInput { input, .. } => match input {
-                            KeyboardInput {
-                                state: ElementState::Pressed,
-                                virtual_keycode: Some(VirtualKeyCode::Escape),
-                                ..
-                            } => *control_flow = ControlFlow::Exit,
-                            _ => {}
-                        },
-                        WindowEvent::Resized(new_size) => {
-                            compositor.resize_window(new_size.width, new_size.height)
-                        }
-                        WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                            compositor.resize_window(new_inner_size.width, new_inner_size.height);
-                        }
-                        _ => {}
+                if should_exit(&event) {
+                    *control_flow = ControlFlow::Exit;
+                }
+                match event {
+                    // TODO: Move size stuff into a viewport struct & add scale factors
+                    WindowEvent::Resized(new_size) => {
+                        compositor.resize_window(new_size.width, new_size.height);
+                    }
+                    WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                        compositor.resize_window(new_inner_size.width, new_inner_size.height)
+                    }
+                    _ => {
+                        state.update(&event);
                     }
                 }
             }
@@ -60,4 +59,19 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
             Event::LoopDestroyed => {}
         }
     })
+}
+
+fn should_exit(event: &winit::event::WindowEvent<'_>) -> bool {
+    match event {
+        WindowEvent::CloseRequested => true,
+        WindowEvent::KeyboardInput { input, .. } => match input {
+            KeyboardInput {
+                state: ElementState::Pressed,
+                virtual_keycode: Some(VirtualKeyCode::Escape),
+                ..
+            } => true,
+            _ => false,
+        },
+        _ => false,
+    }
 }

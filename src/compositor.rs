@@ -1,3 +1,4 @@
+use crate::vertex::Vertex;
 use futures::executor::block_on;
 
 pub struct Compositor {
@@ -45,8 +46,24 @@ impl Compositor {
             wgpu::PresentMode::Mailbox,
         );
 
-        let triangle_pipeline =
-            super::triangle::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
+        let triangle_pipeline = super::triangle::Pipeline::new(
+            &device,
+            wgpu::TextureFormat::Bgra8UnormSrgb,
+            &[
+                Vertex {
+                    position: [0.0, 0.5, 0.0],
+                    color: [1.0, 0.0, 0.0],
+                },
+                Vertex {
+                    position: [-0.5, -0.5, 0.0],
+                    color: [0.0, 1.0, 0.0],
+                },
+                Vertex {
+                    position: [0.5, -0.5, 0.0],
+                    color: [0.0, 0.0, 1.0],
+                },
+            ],
+        );
 
         Self {
             instance,
