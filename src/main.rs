@@ -1,13 +1,10 @@
 use rl_gui::application::Application;
-use wgpu::{CommandEncoder, Device, Queue};
 use winit::dpi::LogicalSize;
 use winit::event::WindowEvent;
 use winit::event_loop::{ControlFlow, EventLoop};
 
 use rl_gui;
 use rl_gui::application::run;
-use rl_gui::surface::Surface;
-use rl_gui::{surface, triangle};
 
 fn main() {
     let event_loop = EventLoop::new();
@@ -25,7 +22,7 @@ impl Application for Test {
         Self {}
     }
 
-    fn update(&mut self, event: WindowEvent, control_flow: &mut ControlFlow) {}
+    fn update(&mut self, _event: WindowEvent, _control_flow: &mut ControlFlow) {}
 
     fn render(&mut self) {}
 }

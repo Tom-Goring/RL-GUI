@@ -1,14 +1,15 @@
+use crate::pipelines;
 use crate::vertex::Vertex;
-use futures::executor::block_on;
 
 pub struct Compositor {
-    instance: wgpu::Instance,
+    _instance: wgpu::Instance,
     device: wgpu::Device,
     queue: wgpu::Queue,
     pub surface: super::surface::Surface,
 
     // Put pipelines in Renderer type?
-    triangle_pipeline: super::triangle::Pipeline,
+    triangle_pipeline: pipelines::triangle::Pipeline,
+    quad_pipeline: pipelines::quad::Pipeline,
 }
 
 impl Compositor {
@@ -46,7 +47,7 @@ impl Compositor {
             wgpu::PresentMode::Mailbox,
         );
 
-        let triangle_pipeline = super::triangle::Pipeline::new(
+        let triangle_pipeline = crate::pipelines::triangle::Pipeline::new(
             &device,
             wgpu::TextureFormat::Bgra8UnormSrgb,
             &[
@@ -65,12 +66,37 @@ impl Compositor {
             ],
         );
 
+        let quad_pipeline = pipelines::quad::Pipeline::new(
+            &device,
+            wgpu::TextureFormat::Bgra8UnormSrgb,
+            &[
+                Vertex {
+                    position: [0.0, 0.0, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [0.5, 0.0, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [0.5, 0.5, 0.0],
+                    color: [0.0, 1.0, 0.5],
+                },
+                Vertex {
+                    position: [0.0, 0.5, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+            ],
+            &[0, 1, 2, 0, 2, 3],
+        );
+
         Self {
-            instance,
+            _instance: instance,
             device,
             queue,
             triangle_pipeline,
             surface,
+            quad_pipeline,
         }
     }
 
@@ -94,7 +120,8 @@ impl Compositor {
                 label: Some("Render Encoder"),
             });
 
-        self.triangle_pipeline.draw(&mut encoder, &frame);
+        // self.triangle_pipeline.draw(&mut encoder, &frame);
+        self.quad_pipeline.draw(&mut encoder, &frame);
 
         self.queue.submit(std::iter::once(encoder.finish()));
     }

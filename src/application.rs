@@ -1,5 +1,5 @@
 use futures::executor::block_on;
-use wgpu::PresentMode;
+
 use winit::event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
@@ -29,7 +29,7 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
         *control_flow = ControlFlow::Poll;
         match event {
             Event::NewEvents(_) => {}
-            Event::WindowEvent { event, window_id } => {
+            Event::WindowEvent { event, .. } => {
                 if should_exit(&event) {
                     *control_flow = ControlFlow::Exit;
                 }

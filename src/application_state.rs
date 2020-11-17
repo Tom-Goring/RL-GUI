@@ -1,6 +1,5 @@
-use winit::dpi::{PhysicalPosition, PhysicalSize};
-use winit::event::{ElementState, KeyboardInput, VirtualKeyCode, WindowEvent};
-use winit::event_loop::ControlFlow;
+use winit::dpi::PhysicalPosition;
+use winit::event::WindowEvent;
 
 pub struct ApplicationState {
     cursor_position: winit::dpi::PhysicalPosition<f64>,
@@ -16,12 +15,7 @@ impl ApplicationState {
     pub fn update(&mut self, event: &winit::event::WindowEvent<'_>) {
         match event {
             WindowEvent::CursorMoved { position, .. } => self.cursor_position = *position,
-            WindowEvent::MouseInput {
-                device_id,
-                state,
-                button,
-                ..
-            } => {
+            WindowEvent::MouseInput { .. } => {
                 println!("{:?}", self.cursor_position);
             }
             _ => {}

@@ -1,5 +1,3 @@
-use wgpu::InputStepMode;
-
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct Vertex {

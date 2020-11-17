@@ -10,10 +10,10 @@ impl Pipeline {
     pub fn new(
         device: &wgpu::Device,
         format: wgpu::TextureFormat,
-        vertices: &[super::vertex::Vertex],
+        vertices: &[crate::vertex::Vertex],
     ) -> Self {
-        let vs_src = include_str!("shaders/triangle.vert");
-        let fs_src = include_str!("shaders/triangle.frag");
+        let vs_src = include_str!("../shaders/triangle.vert");
+        let fs_src = include_str!("../shaders/triangle.frag");
         let mut compiler = shaderc::Compiler::new().unwrap();
 
         let vs_spirv = compiler
