@@ -1,3 +1,5 @@
+use crate::pipelines::triangle::TriangleInstance;
+
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct Vertex {
@@ -22,6 +24,25 @@ impl Vertex {
                 wgpu::VertexAttributeDescriptor {
                     offset: std::mem::size_of::<[f32; 3]>() as wgpu::BufferAddress,
                     shader_location: 1,
+                    format: wgpu::VertexFormat::Float3,
+                },
+            ],
+        }
+    }
+
+    pub fn desc2<'a>() -> wgpu::VertexBufferDescriptor<'a> {
+        wgpu::VertexBufferDescriptor {
+            stride: std::mem::size_of::<TriangleInstance>() as wgpu::BufferAddress,
+            step_mode: wgpu::InputStepMode::Instance,
+            attributes: &[
+                wgpu::VertexAttributeDescriptor {
+                    offset: 0,
+                    shader_location: 2,
+                    format: wgpu::VertexFormat::Float2,
+                },
+                wgpu::VertexAttributeDescriptor {
+                    offset: 2 * 4,
+                    shader_location: 3,
                     format: wgpu::VertexFormat::Float3,
                 },
             ],

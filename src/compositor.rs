@@ -1,4 +1,6 @@
 use crate::pipelines;
+use crate::pipelines::triangle::TriangleInstance;
+use crate::primitives::quad::Quad;
 use crate::vertex::Vertex;
 
 pub struct Compositor {
@@ -52,43 +54,45 @@ impl Compositor {
             wgpu::TextureFormat::Bgra8UnormSrgb,
             &[
                 Vertex {
-                    position: [0.0, 0.5, 0.0],
+                    position: [-0.0868241, 0.49240386, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [-0.49513406, 0.06958647, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [-0.21918549, -0.44939706, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [0.35966998, -0.3473291, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+                Vertex {
+                    position: [0.44147372, 0.2347359, 0.0],
+                    color: [0.5, 0.0, 0.5],
+                },
+            ],
+            &[0, 1, 4, 1, 2, 4, 2, 3, 4],
+            &[
+                TriangleInstance {
+                    position: [-0.5, -0.5],
                     color: [1.0, 0.0, 0.0],
                 },
-                Vertex {
-                    position: [-0.5, -0.5, 0.0],
+                TriangleInstance {
+                    position: [0.5, 0.5],
                     color: [0.0, 1.0, 0.0],
                 },
-                Vertex {
-                    position: [0.5, -0.5, 0.0],
+                TriangleInstance {
+                    position: [0.0, 0.0],
                     color: [0.0, 0.0, 1.0],
                 },
             ],
         );
 
-        let quad_pipeline = pipelines::quad::Pipeline::new(
-            &device,
-            wgpu::TextureFormat::Bgra8UnormSrgb,
-            &[
-                Vertex {
-                    position: [0.0, 0.0, 0.0],
-                    color: [0.5, 0.0, 0.5],
-                },
-                Vertex {
-                    position: [0.5, 0.0, 0.0],
-                    color: [0.5, 0.0, 0.5],
-                },
-                Vertex {
-                    position: [0.5, 0.5, 0.0],
-                    color: [0.0, 1.0, 0.5],
-                },
-                Vertex {
-                    position: [0.0, 0.5, 0.0],
-                    color: [0.5, 0.0, 0.5],
-                },
-            ],
-            &[0, 1, 2, 0, 2, 3],
-        );
+        let quad_pipeline =
+            pipelines::quad::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
 
         Self {
             _instance: instance,
@@ -104,7 +108,7 @@ impl Compositor {
         let swap_chain = self.device.create_swap_chain(
             &self.surface.surface,
             &wgpu::SwapChainDescriptor {
-                usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
+                usage: wgpu::TextureUsage::RENDER_ATTACHMENT,
                 format: wgpu::TextureFormat::Bgra8UnormSrgb,
                 width: self.surface.width(),
                 height: self.surface.height(),
@@ -120,8 +124,17 @@ impl Compositor {
                 label: Some("Render Encoder"),
             });
 
-        // self.triangle_pipeline.draw(&mut encoder, &frame);
-        self.quad_pipeline.draw(&mut encoder, &frame);
+        self.triangle_pipeline.draw(&mut encoder, &frame);
+        // self.quad_pipeline.draw(
+        //     &mut encoder,
+        //     &frame,
+        //     &self.queue,
+        //     &[Quad {
+        //         position: [-0.5, -0.5],
+        //         size: [0.5, 0.5],
+        //         color: [1.0, 0.0, 0.0, 1.0],
+        //     }],
+        // );
 
         self.queue.submit(std::iter::once(encoder.finish()));
     }

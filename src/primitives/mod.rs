@@ -1,1 +1,1 @@
-mod quad;
+pub(crate) mod quad;
