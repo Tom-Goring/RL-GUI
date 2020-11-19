@@ -1,18 +1,22 @@
 #version 450
 
-struct Quad {
-    vec2 pos;
-    vec2 size;
-    vec4 color;
-};
+layout(location=0) in vec3 a_position;
+layout(location=1) in vec2 i_pos;
+layout(location=2) in vec3 i_color;
+layout(location=3) in vec2 i_size;
 
-layout(set=0, binding=0) buffer Vertices {
-    Quad quads[];
-};
-
-layout(location=0) out vec4 v_color;
+layout(location=1) out vec4 v_color;
 
 void main() {
-    v_color = quads[gl_InstanceIndex].color;
-    gl_Position = vec4(quads[gl_InstanceIndex].pos, 0.0, 1.0);
+
+    mat4 transform = mat4(
+        vec4(i_size.x, 0.0, 0.0, 0.0),
+        vec4(0.0, i_size.y, 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+
+    v_color = vec4(i_color, 1.0);
+    vec4 tmp = transform * vec4(a_position.x, a_position.y, 0.0, 1.0);
+    gl_Position = vec4(tmp.x + i_pos.x, tmp.y + i_pos.y, 0.0, 1.0);
 }

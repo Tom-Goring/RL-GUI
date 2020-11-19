@@ -1,7 +1,7 @@
 use crate::pipelines;
-use crate::pipelines::triangle::TriangleInstance;
-use crate::primitives::quad::Quad;
-use crate::vertex::Vertex;
+use crate::primitives::quad::QuadInstance;
+use crate::primitives::triangle::TriangleInstance;
+use crate::primitives::vertex::Vertex;
 
 pub struct Compositor {
     _instance: wgpu::Instance,
@@ -54,24 +54,19 @@ impl Compositor {
             wgpu::TextureFormat::Bgra8UnormSrgb,
             &[
                 Vertex {
-                    position: [-0.0868241, 0.49240386, 0.0],
-                    color: [0.5, 0.0, 0.5],
+                    position: [-0.0868241, 0.49240386],
                 },
                 Vertex {
-                    position: [-0.49513406, 0.06958647, 0.0],
-                    color: [0.5, 0.0, 0.5],
+                    position: [-0.49513406, 0.06958647],
                 },
                 Vertex {
-                    position: [-0.21918549, -0.44939706, 0.0],
-                    color: [0.5, 0.0, 0.5],
+                    position: [-0.21918549, -0.44939706],
                 },
                 Vertex {
-                    position: [0.35966998, -0.3473291, 0.0],
-                    color: [0.5, 0.0, 0.5],
+                    position: [0.35966998, -0.3473291],
                 },
                 Vertex {
-                    position: [0.44147372, 0.2347359, 0.0],
-                    color: [0.5, 0.0, 0.5],
+                    position: [0.44147372, 0.2347359],
                 },
             ],
             &[0, 1, 4, 1, 2, 4, 2, 3, 4],
@@ -124,17 +119,48 @@ impl Compositor {
                 label: Some("Render Encoder"),
             });
 
-        self.triangle_pipeline.draw(&mut encoder, &frame);
-        // self.quad_pipeline.draw(
-        //     &mut encoder,
-        //     &frame,
-        //     &self.queue,
-        //     &[Quad {
-        //         position: [-0.5, -0.5],
-        //         size: [0.5, 0.5],
-        //         color: [1.0, 0.0, 0.0, 1.0],
-        //     }],
-        // );
+        let _ = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
+                attachment: &frame.output.view,
+                resolve_target: None,
+                ops: wgpu::Operations {
+                    load: wgpu::LoadOp::Clear({
+                        wgpu::Color {
+                            r: 1.0,
+                            g: 1.0,
+                            b: 1.0,
+                            a: 1.0,
+                        }
+                    }),
+                    store: true,
+                },
+            }],
+            depth_stencil_attachment: None,
+        });
+
+        // self.triangle_pipeline.draw(&mut encoder, &frame);
+        self.quad_pipeline.draw(
+            &mut encoder,
+            &frame,
+            &self.queue,
+            &[
+                QuadInstance {
+                    position: [0.0, 0.0],
+                    color: [0.0, 1.0, 0.0],
+                    size: [0.5, 1.0],
+                },
+                QuadInstance {
+                    position: [0.5, 0.5],
+                    color: [1.0, 0.0, 0.0],
+                    size: [0.5, 0.5],
+                },
+                QuadInstance {
+                    position: [0.5, 0.0],
+                    color: [0.0, 0.0, 1.0],
+                    size: [0.5, 0.5],
+                },
+            ],
+        );
 
         self.queue.submit(std::iter::once(encoder.finish()));
     }

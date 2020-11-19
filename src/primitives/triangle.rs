@@ -6,40 +6,31 @@
 */
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
-pub struct QuadInstance {
+pub struct TriangleInstance {
     pub position: [f32; 2],
     pub color: [f32; 3],
-    pub size: [f32; 2],
 }
 
-impl QuadInstance {
+impl TriangleInstance {
     pub fn desc<'a>() -> wgpu::VertexBufferDescriptor<'a> {
         wgpu::VertexBufferDescriptor {
             stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
             step_mode: wgpu::InputStepMode::Instance,
             attributes: &[
                 wgpu::VertexAttributeDescriptor {
-                    // Pos
                     offset: 0,
-                    shader_location: 1,
-                    format: wgpu::VertexFormat::Float2,
-                },
-                wgpu::VertexAttributeDescriptor {
-                    // Color
-                    offset: 2 * 4,
                     shader_location: 2,
-                    format: wgpu::VertexFormat::Float3,
+                    format: wgpu::VertexFormat::Float2,
                 },
                 wgpu::VertexAttributeDescriptor {
-                    // Scale
-                    offset: 4 * (3 + 2),
+                    offset: 2 * 4,
                     shader_location: 3,
-                    format: wgpu::VertexFormat::Float2,
+                    format: wgpu::VertexFormat::Float3,
                 },
             ],
         }
     }
 }
 
-unsafe impl bytemuck::Pod for QuadInstance {}
-unsafe impl bytemuck::Zeroable for QuadInstance {}
+unsafe impl bytemuck::Pod for TriangleInstance {}
+unsafe impl bytemuck::Zeroable for TriangleInstance {}

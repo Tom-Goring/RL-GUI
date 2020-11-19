@@ -23,7 +23,8 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
     let mut state = ApplicationState::new();
 
     let mut app = App::init();
-    // app should have state, which it then uses to render to the window
+
+    // TODO: Add event system to handle events triggered by user actions on user defined widgets
 
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Poll;
@@ -52,6 +53,7 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
             Event::Resumed => {}
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
+                // TODO: Add generic element widget output for user defined render function, to can be passed into the Renderer
                 app.render();
                 compositor.draw();
             }

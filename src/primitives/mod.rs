@@ -1,1 +1,3 @@
-pub(crate) mod quad;
+pub mod quad;
+pub mod triangle;
+pub mod vertex;

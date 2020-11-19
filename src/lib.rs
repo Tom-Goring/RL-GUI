@@ -4,4 +4,3 @@ pub mod compositor;
 pub mod pipelines;
 mod primitives;
 pub mod surface;
-pub mod vertex;
