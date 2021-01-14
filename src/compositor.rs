@@ -1,8 +1,13 @@
+#![allow(dead_code)]
+
 use crate::pipelines;
 use crate::primitives::quad::QuadInstance;
 use crate::primitives::triangle::TriangleInstance;
 use crate::primitives::vertex::Vertex;
+use crate::primitives::Primitive;
 
+/// Data structure to combine elements together and draw them.
+/// Will possibly take a renderer argument in the future for modularity
 pub struct Compositor {
     _instance: wgpu::Instance,
     device: wgpu::Device,
@@ -99,11 +104,11 @@ impl Compositor {
         }
     }
 
-    pub fn draw(&mut self) {
-        let swap_chain = self.device.create_swap_chain(
+    pub fn draw(&mut self, content: Primitive) {
+        let mut swap_chain = self.device.create_swap_chain(
             &self.surface.surface,
             &wgpu::SwapChainDescriptor {
-                usage: wgpu::TextureUsage::RENDER_ATTACHMENT,
+                usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
                 format: wgpu::TextureFormat::Bgra8UnormSrgb,
                 width: self.surface.width(),
                 height: self.surface.height(),
@@ -138,29 +143,26 @@ impl Compositor {
             depth_stencil_attachment: None,
         });
 
+        // TODO: Add logic for rendering Primitive type without this bodge
+        let primitive = match content {
+            Primitive::None => panic!("Wrong primitive type received in compositor due to bodge"),
+            Primitive::Quad {
+                position,
+                color,
+                size,
+            } => QuadInstance {
+                position,
+                color,
+                size,
+            },
+            Primitive::Group(_) => {
+                panic!("Wrong primitive type received in compositor due to bodge")
+            }
+        };
+
         // self.triangle_pipeline.draw(&mut encoder, &frame);
-        self.quad_pipeline.draw(
-            &mut encoder,
-            &frame,
-            &self.queue,
-            &[
-                QuadInstance {
-                    position: [0.0, 0.0],
-                    color: [0.0, 1.0, 0.0],
-                    size: [0.5, 1.0],
-                },
-                QuadInstance {
-                    position: [0.5, 0.5],
-                    color: [1.0, 0.0, 0.0],
-                    size: [0.5, 0.5],
-                },
-                QuadInstance {
-                    position: [0.5, 0.0],
-                    color: [0.0, 0.0, 1.0],
-                    size: [0.5, 0.5],
-                },
-            ],
-        );
+        self.quad_pipeline
+            .draw(&mut encoder, &frame, &self.queue, &[primitive]);
 
         self.queue.submit(std::iter::once(encoder.finish()));
     }

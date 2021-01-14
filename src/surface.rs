@@ -13,7 +13,7 @@ impl Surface {
         present_mode: wgpu::PresentMode,
     ) -> Self {
         let desc = wgpu::SwapChainDescriptor {
-            usage: wgpu::TextureUsage::RENDER_ATTACHMENT,
+            usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
             format: wgpu::TextureFormat::Bgra8UnormSrgb,
             width,
             height,

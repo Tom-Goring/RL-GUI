@@ -5,11 +5,17 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
 use crate::application_state::ApplicationState;
+use crate::element::Element;
+use crate::viewport::Viewport;
 
-pub trait Application: 'static {
+pub trait Application: 'static + Clone {
+    type Message;
+
     fn init() -> Self;
-    fn update(&mut self, event: WindowEvent, control_flow: &mut ControlFlow);
-    fn render(&mut self);
+    /// This should handle user defined events, allowing the render function to change its output based on app state
+    fn update(&mut self, message: Self::Message);
+    /// This should return the element tree to be processed by the compositor
+    fn view(&mut self) -> Element<Self::Message>;
 }
 
 pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
@@ -17,14 +23,15 @@ pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
 }
 
 // Add compositor as type argument to allow for use of standardised rendering in app.render()
-pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Window) {
+pub async fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
     let mut compositor = super::compositor::Compositor::new(&window).await;
 
-    let mut state = ApplicationState::new();
+    let viewport = Viewport::new(window.inner_size().width, window.inner_size().height);
+    let mut state = ApplicationState::new(viewport);
 
-    let mut app = App::init();
+    let mut app = A::init();
 
-    // TODO: Add event system to handle events triggered by user actions on user defined widgets
+    let mut messages = Vec::new();
 
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Poll;
@@ -44,6 +51,18 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
                     }
                     _ => {
                         state.update(&event);
+                        {
+                            let mut ui = app.view();
+                            ui.on_event(
+                                event,
+                                state.cursor_position,
+                                state.viewport,
+                                &mut messages,
+                            );
+                        }
+                        for message in messages.drain(..) {
+                            app.update(message);
+                        }
                     }
                 }
             }
@@ -54,8 +73,8 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
                 // TODO: Add generic element widget output for user defined render function, to can be passed into the Renderer
-                app.render();
-                compositor.draw();
+                let ui = app.view();
+                compositor.draw(ui.as_primitive());
             }
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}
@@ -66,14 +85,11 @@ pub async fn run_async<App: Application>(event_loop: EventLoop<()>, window: Wind
 fn should_exit(event: &winit::event::WindowEvent<'_>) -> bool {
     match event {
         WindowEvent::CloseRequested => true,
-        WindowEvent::KeyboardInput { input, .. } => match input {
-            KeyboardInput {
-                state: ElementState::Pressed,
-                virtual_keycode: Some(VirtualKeyCode::Escape),
-                ..
-            } => true,
-            _ => false,
-        },
+        WindowEvent::KeyboardInput { input, .. } => matches!(input, KeyboardInput {
+            state: ElementState::Pressed,
+            virtual_keycode: Some(VirtualKeyCode::Escape),
+            ..
+        }),
         _ => false,
     }
 }

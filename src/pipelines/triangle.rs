@@ -22,7 +22,7 @@ impl Pipeline {
         let (vs_src, fs_src, mut compiler) = {
             let vs_src = include_str!("../shaders/triangle.vert");
             let fs_src = include_str!("../shaders/triangle.frag");
-            let mut compiler = shaderc::Compiler::new().unwrap();
+            let compiler = shaderc::Compiler::new().unwrap();
 
             (vs_src, fs_src, compiler)
         };
@@ -59,7 +59,7 @@ impl Pipeline {
             (vs_module, fs_module)
         };
 
-        let mut instances = Vec::from(instances);
+        let instances = Vec::from(instances);
 
         let (vertex_buffer, index_buffer, instance_buffer) = {
             let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
@@ -144,7 +144,7 @@ impl Pipeline {
     }
 
     pub fn draw(&self, encoder: &mut wgpu::CommandEncoder, target: &wgpu::SwapChainFrame) {
-        let mut render_pass = super::draw::begin_load_render_pass(encoder, &target);
+        let mut render_pass = super::begin_load_render_pass(encoder, &target);
         render_pass.set_pipeline(&self.render_pipeline);
         render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
         render_pass.set_vertex_buffer(1, self.instance_buffer.slice(..));

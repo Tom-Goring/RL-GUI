@@ -150,7 +150,7 @@ impl Pipeline {
         queue: &wgpu::Queue,
         instances: &[QuadInstance],
     ) {
-        let mut render_pass = super::draw::begin_load_render_pass(encoder, &target);
+        let mut render_pass = super::begin_load_render_pass(encoder, &target);
 
         queue.write_buffer(&self.instance_buffer, 0, bytemuck::cast_slice(instances));
 

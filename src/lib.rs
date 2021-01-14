@@ -1,6 +1,10 @@
 pub mod application;
 mod application_state;
 pub mod compositor;
+pub mod element;
 pub mod pipelines;
+mod point;
 mod primitives;
 pub mod surface;
+mod viewport;
+pub mod widgets;

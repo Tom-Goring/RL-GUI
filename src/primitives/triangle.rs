@@ -1,9 +1,7 @@
-/*
-    Stores the information about a single quad - the actual vertices
-    are hard coded in the quad pipeline, but here we specify the per
-    instance qualities of an individual quad, and then pass them into
-    the vertex shader to enable instancing.
-*/
+///   Stores the information about a single quad - the actual vertices
+///   are hard coded in the quad pipeline, but here we specify the per
+///   instance qualities of an individual quad, and then pass them into
+///   the vertex shader to enable instancing.
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct TriangleInstance {
