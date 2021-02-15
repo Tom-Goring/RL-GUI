@@ -10,7 +10,7 @@ pub struct TriangleInstance {
 }
 
 impl TriangleInstance {
-    pub fn desc<'a>() -> wgpu::VertexBufferDescriptor<'a> {
+    pub fn _desc<'a>() -> wgpu::VertexBufferDescriptor<'a> {
         wgpu::VertexBufferDescriptor {
             stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
             step_mode: wgpu::InputStepMode::Instance,

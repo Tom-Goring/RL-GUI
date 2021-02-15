@@ -1,6 +1,4 @@
 # Todo
 
-- [ ] Create renderable widget type
-- [ ] Update Application trait definitions
-- [ ] Add application state data structure
-- [ ] Implement message system for updating application state on user side
+- [ ] Develop layout system to handle multiple widgets
+- [ ] Refactor widget trait to separate widgets from draw->primitive logic?

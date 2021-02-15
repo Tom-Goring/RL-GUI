@@ -1,4 +1,4 @@
-use crate::point::Point;
+use crate::core::point::Point;
 
 #[derive(Copy, Clone)]
 pub struct Viewport {

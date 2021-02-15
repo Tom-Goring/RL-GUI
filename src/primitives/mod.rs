@@ -1,4 +1,5 @@
 pub mod quad;
+pub mod text;
 pub mod triangle;
 pub mod vertex;
 

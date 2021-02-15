@@ -13,6 +13,7 @@ fn main() {
     window.set_title("Hello World");
     window.set_inner_size(LogicalSize::new(1000, 600));
 
+    // TODO: move the eventloop and window creation inside of the run function
     run::<Test>(event_loop, window);
 }
 
@@ -70,10 +71,9 @@ impl Application for Test {
     fn view(&mut self) -> Element<Self::Message> {
         let rectangle = Button::new(
             &mut self.button,
-            0.0,
-            0.0,
-            1.0,
-            1.0,
+            Some(String::from("Hello")),
+            0.1,
+            0.1,
             Some(TestMessage::RectangleClicked),
             self.color.to_rgb(),
         );

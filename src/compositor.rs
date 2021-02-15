@@ -2,21 +2,27 @@
 
 use crate::pipelines;
 use crate::primitives::quad::QuadInstance;
-use crate::primitives::triangle::TriangleInstance;
-use crate::primitives::vertex::Vertex;
 use crate::primitives::Primitive;
+use crate::surface::Surface;
+use futures::task::SpawnExt;
+use std::borrow::BorrowMut;
+use wgpu_glyph::{Section, Text};
 
 /// Data structure to combine elements together and draw them.
 /// Will possibly take a renderer argument in the future for modularity
+/// A compositor takes multiple drawable types and 'squishes' them together into a single image to be rendered by the
+/// gpu
 pub struct Compositor {
     _instance: wgpu::Instance,
     device: wgpu::Device,
     queue: wgpu::Queue,
-    pub surface: super::surface::Surface,
+    surface: Surface,
+    staging_belt: wgpu::util::StagingBelt,
+    local_pool: futures::executor::LocalPool,
 
-    // Put pipelines in Renderer type?
     triangle_pipeline: pipelines::triangle::Pipeline,
     quad_pipeline: pipelines::quad::Pipeline,
+    text_pipeline: pipelines::text::Pipeline,
 }
 
 impl Compositor {
@@ -54,54 +60,33 @@ impl Compositor {
             wgpu::PresentMode::Mailbox,
         );
 
-        let triangle_pipeline = crate::pipelines::triangle::Pipeline::new(
-            &device,
-            wgpu::TextureFormat::Bgra8UnormSrgb,
-            &[
-                Vertex {
-                    position: [-0.0868241, 0.49240386],
-                },
-                Vertex {
-                    position: [-0.49513406, 0.06958647],
-                },
-                Vertex {
-                    position: [-0.21918549, -0.44939706],
-                },
-                Vertex {
-                    position: [0.35966998, -0.3473291],
-                },
-                Vertex {
-                    position: [0.44147372, 0.2347359],
-                },
-            ],
-            &[0, 1, 4, 1, 2, 4, 2, 3, 4],
-            &[
-                TriangleInstance {
-                    position: [-0.5, -0.5],
-                    color: [1.0, 0.0, 0.0],
-                },
-                TriangleInstance {
-                    position: [0.5, 0.5],
-                    color: [0.0, 1.0, 0.0],
-                },
-                TriangleInstance {
-                    position: [0.0, 0.0],
-                    color: [0.0, 0.0, 1.0],
-                },
-            ],
-        );
+        let staging_belt = wgpu::util::StagingBelt::new(10 * 1024);
+        let local_pool = futures::executor::LocalPool::new();
+
+        let triangle_pipeline =
+            pipelines::triangle::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
 
         let quad_pipeline =
             pipelines::quad::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
+
+        let text_pipeline =
+            pipelines::text::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
 
         Self {
             _instance: instance,
             device,
             queue,
-            triangle_pipeline,
             surface,
+            staging_belt,
+            local_pool,
+            triangle_pipeline,
             quad_pipeline,
+            text_pipeline,
         }
+    }
+
+    pub fn surface(&mut self) -> &mut Surface {
+        self.surface.borrow_mut()
     }
 
     pub fn draw(&mut self, content: Primitive) {
@@ -143,7 +128,7 @@ impl Compositor {
             depth_stencil_attachment: None,
         });
 
-        // TODO: Add logic for rendering Primitive type without this bodge
+        // TODO: Add logic for rendering Primitive type without this bodge - this is part of the layout work
         let primitive = match content {
             Primitive::None => panic!("Wrong primitive type received in compositor due to bodge"),
             Primitive::Quad {
@@ -160,11 +145,44 @@ impl Compositor {
             }
         };
 
-        // self.triangle_pipeline.draw(&mut encoder, &frame);
-        self.quad_pipeline
-            .draw(&mut encoder, &frame, &self.queue, &[primitive]);
+        self.quad_pipeline.draw(
+            &self.device,
+            &mut encoder,
+            &mut self.staging_belt,
+            &frame.output.view,
+            &[primitive],
+        );
 
-        self.queue.submit(std::iter::once(encoder.finish()));
+        // self.text_pipeline.queue(Section {
+        //     screen_position: (40.0, 40.0),
+        //     bounds: (self.surface.height() as f32, self.surface.width() as f32),
+        //     text: vec![Text::new("Test")
+        //         .with_color([0.0, 0.0, 0.0, 1.0])
+        //         .with_scale(40.0)],
+        //     ..Section::default()
+        // });
+
+        self.text_pipeline
+            .draw_brush
+            .draw_queued(
+                &self.device,
+                &mut self.staging_belt,
+                &mut encoder,
+                &frame.output.view,
+                self.surface.width(),
+                self.surface.height(),
+            )
+            .expect("Text draw queued");
+
+        self.staging_belt.finish();
+        self.queue.submit(Some(encoder.finish()));
+
+        self.local_pool
+            .spawner()
+            .spawn(self.staging_belt.recall())
+            .expect("Recall staging belt");
+
+        self.local_pool.run_until_stalled();
     }
 
     pub fn resize_window(&mut self, width: u32, height: u32) {

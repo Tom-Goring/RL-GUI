@@ -1,4 +1,4 @@
-use crate::point::Point;
+use crate::core::point::Point;
 use crate::viewport::Viewport;
 use winit::event::WindowEvent;
 

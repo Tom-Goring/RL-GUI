@@ -17,28 +17,37 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" ENABLED="true" />
     </configurations>
   </component>
   <component name="CargoProjects">
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add triangle instancing - needs cleanup &amp; rebase">
-      <change afterPath="$PROJECT_DIR$/src/pipelines/draw.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/primitives/triangle.rs" afterDir="false" />
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add widget and message logic and an initial test button widget">
+      <change afterPath="$PROJECT_DIR$/src/core/bounds.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/size.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/primitives/text.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application_state.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/compositor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/quad.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pipelines/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/text.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/point.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/primitives/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/quad.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/quad.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/quad.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/quad.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/quad.vert" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vertex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/vertex.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/primitives/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/viewport.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/viewport.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/button.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/button.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,16 +105,17 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/tmp/wgpu-rs" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../iced" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="language.rust.rustfmt" />
+    <property name="settings.editor.selected.configurable" value="language.rust.cargo" />
   </component>
   <component name="Push.Settings">
     <force-push-targets>
@@ -114,33 +124,37 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\layout" />
+      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\wgpu" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\primitives" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\old" />
-      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src" />
-      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\traits" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="channel" value="DEFAULT" />
       <option name="command" value="run" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
   </component>
   <component name="RustProjectSettings">
+    <option name="externalLinter" value="Clippy" />
+    <option name="runExternalLinterOnTheFly" value="true" />
     <option name="runRustfmtOnSave" value="true" />
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="useRustfmt" value="true" />
@@ -187,6 +201,37 @@
       <workItem from="1605622782610" duration="14759000" />
       <workItem from="1605657666907" duration="8211000" />
       <workItem from="1605707216838" duration="18819000" />
+      <workItem from="1609776900205" duration="147000" />
+      <workItem from="1609777055240" duration="144000" />
+      <workItem from="1609777208996" duration="306000" />
+      <workItem from="1609777523833" duration="79000" />
+      <workItem from="1609777609102" duration="108000" />
+      <workItem from="1609777723958" duration="579000" />
+      <workItem from="1609778313930" duration="870000" />
+      <workItem from="1609779394601" duration="3541000" />
+      <workItem from="1609803024297" duration="656000" />
+      <workItem from="1610043363233" duration="4000" />
+      <workItem from="1610048253091" duration="184000" />
+      <workItem from="1610465299376" duration="1337000" />
+      <workItem from="1610467934199" duration="1639000" />
+      <workItem from="1610469762765" duration="1685000" />
+      <workItem from="1610471545483" duration="7000" />
+      <workItem from="1610471582823" duration="1378000" />
+      <workItem from="1610507371439" duration="189000" />
+      <workItem from="1610508314889" duration="32000" />
+      <workItem from="1610552936187" duration="1187000" />
+      <workItem from="1610554887736" duration="117000" />
+      <workItem from="1610555054295" duration="1450000" />
+      <workItem from="1610556611052" duration="1351000" />
+      <workItem from="1610558067518" duration="7603000" />
+      <workItem from="1610641768385" duration="347000" />
+      <workItem from="1610642161472" duration="313000" />
+      <workItem from="1610642664471" duration="445000" />
+      <workItem from="1610643139031" duration="2964000" />
+      <workItem from="1610647559165" duration="1597000" />
+      <workItem from="1613005587623" duration="590000" />
+      <workItem from="1613408421893" duration="8521000" />
+      <workItem from="1613419675079" duration="1454000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -258,7 +303,14 @@
       <option name="project" value="LOCAL" />
       <updated>1605666916281</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Add widget and message logic and an initial test button widget">
+      <created>1610651369891</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1610651369891</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,72 +339,11 @@
     <MESSAGE value="Add first modular version, simple triangle render" />
     <MESSAGE value="Refactor &amp; add initial quad pipeline" />
     <MESSAGE value="Add triangle instancing - needs cleanup &amp; rebase" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add triangle instancing - needs cleanup &amp; rebase" />
+    <MESSAGE value="Add widget and message logic and an initial test button widget" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add widget and message logic and an initial test button widget" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="2152" y="360" key="#Plugins" timestamp="1602073432495">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2152" y="360" key="#Plugins/0.0.5120.1440@0.0.5120.1440" timestamp="1602073432495" />
-    <state x="2014" y="378" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604707306557">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2014" y="378" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.5120.1440@0.0.5120.1440" timestamp="1604707306557" />
-    <state x="2317" y="525" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605573281108">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2317" y="525" key="#com.intellij.fileTypes.FileTypeChooser/0.0.5120.1440@0.0.5120.1440" timestamp="1605573281108" />
-    <state x="2365" y="435" key="#com.intellij.ide.util.MemberChooser" timestamp="1605404686711">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2365" y="435" key="#com.intellij.ide.util.MemberChooser/0.0.5120.1440@0.0.5120.1440" timestamp="1605404686711" />
-    <state x="2290" y="470" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1604709000127">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2290" y="470" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.5120.1440@0.0.5120.1440" timestamp="1604709000127" />
-    <state x="2328" y="498" key="#com.intellij.tools.ToolEditorDialog" timestamp="1601743448993">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2328" y="498" key="#com.intellij.tools.ToolEditorDialog/0.0.5120.1440@0.0.5120.1440" timestamp="1601743448993" />
-    <state x="504" y="129" key="DiffContextDialog" timestamp="1601744197914">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="504" y="129" key="DiffContextDialog/0.0.5120.1440@0.0.5120.1440" timestamp="1601744197914" />
-    <state x="2340" y="460" key="FileChooserDialogImpl" timestamp="1604628297553">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2340" y="460" key="FileChooserDialogImpl/0.0.5120.1440@0.0.5120.1440" timestamp="1604628297553" />
-    <state width="2514" height="397" key="GridCell.Tab.0.bottom" timestamp="1605749624491">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state width="2514" height="397" key="GridCell.Tab.0.bottom/0.0.5120.1440@0.0.5120.1440" timestamp="1605749624491" />
-    <state width="2514" height="397" key="GridCell.Tab.0.center" timestamp="1605749624491">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state width="2514" height="397" key="GridCell.Tab.0.center/0.0.5120.1440@0.0.5120.1440" timestamp="1605749624491" />
-    <state width="2514" height="397" key="GridCell.Tab.0.left" timestamp="1605749624491">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state width="2514" height="397" key="GridCell.Tab.0.left/0.0.5120.1440@0.0.5120.1440" timestamp="1605749624491" />
-    <state width="2514" height="397" key="GridCell.Tab.0.right" timestamp="1605749624491">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state width="2514" height="397" key="GridCell.Tab.0.right/0.0.5120.1440@0.0.5120.1440" timestamp="1605749624491" />
-    <state x="2140" y="466" key="IDE.errors.dialog" timestamp="1601656968496">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2140" y="466" key="IDE.errors.dialog/0.0.5120.1440@0.0.5120.1440" timestamp="1601656968496" />
-    <state x="2034" y="382" key="SettingsEditor" timestamp="1604626664523">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2034" y="382" key="SettingsEditor/0.0.5120.1440@0.0.5120.1440" timestamp="1604626664523" />
-    <state x="2152" y="456" key="Vcs.Push.Dialog.v2" timestamp="1605666911550">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2152" y="456" key="Vcs.Push.Dialog.v2/0.0.5120.1440@0.0.5120.1440" timestamp="1605666911550" />
-    <state x="2223" y="439" width="672" height="678" key="search.everywhere.popup" timestamp="1604707080854">
-      <screen x="0" y="0" width="5120" height="1440" />
-    </state>
-    <state x="2223" y="439" width="672" height="678" key="search.everywhere.popup/0.0.5120.1440@0.0.5120.1440" timestamp="1604707080854" />
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

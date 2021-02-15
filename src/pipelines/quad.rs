@@ -145,19 +145,31 @@ impl Pipeline {
 
     pub fn draw(
         &self,
+        device: &wgpu::Device,
         encoder: &mut wgpu::CommandEncoder,
-        target: &wgpu::SwapChainFrame,
-        queue: &wgpu::Queue,
+        staging_belt: &mut wgpu::util::StagingBelt,
+        target: &wgpu::TextureView,
         instances: &[QuadInstance],
     ) {
-        let mut render_pass = super::begin_load_render_pass(encoder, &target);
+        let instance_bytes = bytemuck::cast_slice(instances);
 
-        queue.write_buffer(&self.instance_buffer, 0, bytemuck::cast_slice(instances));
+        let mut instance_buffer = staging_belt.write_buffer(
+            encoder,
+            &self.instance_buffer,
+            0,
+            wgpu::BufferSize::new(instance_bytes.len() as u64).unwrap(),
+            device,
+        );
 
-        render_pass.set_pipeline(&self.render_pipeline);
-        render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-        render_pass.set_vertex_buffer(1, self.instance_buffer.slice(..));
-        render_pass.set_index_buffer(self.index_buffer.slice(..));
-        render_pass.draw_indexed(0..INDICES.len() as u32, 0, 0..instances.len() as u32);
+        instance_buffer.copy_from_slice(instance_bytes);
+
+        {
+            let mut render_pass = super::begin_load_render_pass(encoder, &target);
+            render_pass.set_pipeline(&self.render_pipeline);
+            render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+            render_pass.set_vertex_buffer(1, self.instance_buffer.slice(..));
+            render_pass.set_index_buffer(self.index_buffer.slice(..));
+            render_pass.draw_indexed(0..INDICES.len() as u32, 0, 0..instances.len() as u32);
+        }
     }
 }

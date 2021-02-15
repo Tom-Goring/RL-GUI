@@ -5,6 +5,7 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
 use crate::application_state::ApplicationState;
+use crate::core::bounds::Bounds;
 use crate::element::Element;
 use crate::viewport::Viewport;
 
@@ -19,12 +20,12 @@ pub trait Application: 'static + Clone {
 }
 
 pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
-    block_on(run_async::<App>(event_loop, window));
+    run_async::<App>(event_loop, window);
 }
 
 // Add compositor as type argument to allow for use of standardised rendering in app.render()
-pub async fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
-    let mut compositor = super::compositor::Compositor::new(&window).await;
+pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
+    let mut compositor = block_on(super::compositor::Compositor::new(&window));
 
     let viewport = Viewport::new(window.inner_size().width, window.inner_size().height);
     let mut state = ApplicationState::new(viewport);
@@ -42,7 +43,6 @@ pub async fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window
                     *control_flow = ControlFlow::Exit;
                 }
                 match event {
-                    // TODO: Move size stuff into a viewport struct & add scale factors
                     WindowEvent::Resized(new_size) => {
                         compositor.resize_window(new_size.width, new_size.height);
                     }
@@ -53,11 +53,18 @@ pub async fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window
                         state.update(&event);
                         {
                             let mut ui = app.view();
+                            // TODO: develop system to calculate locations and sizes based on user given data
                             ui.on_event(
                                 event,
                                 state.cursor_position,
                                 state.viewport,
                                 &mut messages,
+                                Bounds {
+                                    x: 0.0,
+                                    y: 0.0,
+                                    width: 1.0,
+                                    height: 1.0,
+                                },
                             );
                         }
                         for message in messages.drain(..) {
@@ -72,7 +79,6 @@ pub async fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window
             Event::Resumed => {}
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
-                // TODO: Add generic element widget output for user defined render function, to can be passed into the Renderer
                 let ui = app.view();
                 compositor.draw(ui.as_primitive());
             }

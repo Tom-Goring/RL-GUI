@@ -4,11 +4,11 @@ pub mod triangle;
 
 pub fn begin_load_render_pass<'a>(
     encoder: &'a mut wgpu::CommandEncoder,
-    target: &'a wgpu::SwapChainFrame,
+    target: &'a wgpu::TextureView,
 ) -> wgpu::RenderPass<'a> {
     encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
         color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
-            attachment: &target.output.view,
+            attachment: &target,
             resolve_target: None,
             ops: wgpu::Operations {
                 load: wgpu::LoadOp::Load,
