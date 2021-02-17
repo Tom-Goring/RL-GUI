@@ -6,5 +6,5 @@ impl Pipeline {
         Self {}
     }
 
-    pub fn draw(&self, _encoder: &mut wgpu::CommandEncoder, _target: &wgpu::SwapChainFrame) {}
+    pub fn _draw(&self, _encoder: &mut wgpu::CommandEncoder, _target: &wgpu::SwapChainFrame) {}
 }

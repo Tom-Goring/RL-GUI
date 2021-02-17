@@ -6,13 +6,13 @@
 */
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
-pub struct QuadInstance {
+pub struct Quad {
     pub position: [f32; 2],
     pub color: [f32; 3],
     pub size: [f32; 2],
 }
 
-impl QuadInstance {
+impl Quad {
     pub fn desc<'a>() -> wgpu::VertexBufferDescriptor<'a> {
         wgpu::VertexBufferDescriptor {
             stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
@@ -41,5 +41,5 @@ impl QuadInstance {
     }
 }
 
-unsafe impl bytemuck::Pod for QuadInstance {}
-unsafe impl bytemuck::Zeroable for QuadInstance {}
+unsafe impl bytemuck::Pod for Quad {}
+unsafe impl bytemuck::Zeroable for Quad {}

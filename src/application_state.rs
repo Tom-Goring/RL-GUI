@@ -1,4 +1,5 @@
 use crate::core::point::Point;
+use crate::core::size::Size;
 use crate::viewport::Viewport;
 use winit::event::WindowEvent;
 
@@ -33,5 +34,9 @@ impl ApplicationState {
             // },
             _ => {}
         }
+    }
+
+    pub fn logical_size(&self) -> Size<f32> {
+        self.viewport.logical_size()
     }
 }

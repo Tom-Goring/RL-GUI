@@ -6,7 +6,9 @@ use winit::window::Window;
 
 use crate::application_state::ApplicationState;
 use crate::core::bounds::Bounds;
+use crate::core::size::Size;
 use crate::element::Element;
+use crate::layout::limits::Limits;
 use crate::viewport::Viewport;
 
 pub trait Application: 'static + Clone {
@@ -52,6 +54,8 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                     _ => {
                         state.update(&event);
                         {
+                            // For every widget we need to pass it its bounds
+                            // Therefore we need some sort of data structure to hold all widgets and their bounds
                             let mut ui = app.view();
                             // TODO: develop system to calculate locations and sizes based on user given data
                             ui.on_event(
@@ -80,7 +84,12 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
                 let ui = app.view();
-                compositor.draw(ui.as_primitive());
+                let layout = ui.layout(
+                    &mut compositor,
+                    Limits::new(Size::ZERO, state.logical_size()),
+                );
+                let primitives = ui.draw(layout);
+                compositor.draw(primitives);
             }
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}

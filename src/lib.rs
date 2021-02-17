@@ -1,10 +1,14 @@
 pub mod application;
-mod application_state;
-pub mod compositor;
-pub mod core;
 pub mod element;
-pub mod pipelines;
+pub mod widgets; // TODO: make this private or turn it into a widget?
+
+mod application_state;
+mod compositor;
+mod core;
+mod layout;
+mod pipelines;
 mod primitives;
-pub mod surface;
+mod surface;
 mod viewport;
-pub mod widgets;
+
+pub use crate::core::length::Length;

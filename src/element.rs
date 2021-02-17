@@ -1,5 +1,8 @@
+use crate::compositor::Compositor;
 use crate::core::bounds::Bounds;
 use crate::core::point::Point;
+use crate::layout::limits::Limits;
+use crate::layout::node::Node;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 use crate::widgets::Widget;
@@ -17,8 +20,12 @@ impl<'a, Message> Element<'a, Message> {
         }
     }
 
-    pub fn as_primitive(&self) -> Primitive {
-        self.content.draw()
+    pub fn draw(&self, node: Node) -> Primitive {
+        self.content.draw(node)
+    }
+
+    pub fn layout(&self, compositor: &mut Compositor, limits: Limits) -> Node {
+        self.content.layout(compositor, limits)
     }
 
     pub fn on_event(

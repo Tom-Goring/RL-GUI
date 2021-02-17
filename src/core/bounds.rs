@@ -1,6 +1,7 @@
 use super::point::Point;
 use super::size::Size;
 
+#[derive(Copy, Clone)]
 /// Holds data on an arbitrary set of bounds. Tracks a set of xy coordinates alongside a width and height value.
 pub struct Bounds<T = f32> {
     pub x: T,

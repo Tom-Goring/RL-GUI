@@ -1,12 +1,14 @@
 #![allow(dead_code)]
 
+use crate::core::size::Size;
 use crate::pipelines;
-use crate::primitives::quad::QuadInstance;
+use crate::primitives::layer::Layer;
 use crate::primitives::Primitive;
 use crate::surface::Surface;
 use futures::task::SpawnExt;
+use glyph_brush::Section;
 use std::borrow::BorrowMut;
-use wgpu_glyph::{Section, Text};
+use wgpu_glyph::Text;
 
 /// Data structure to combine elements together and draw them.
 /// Will possibly take a renderer argument in the future for modularity
@@ -89,7 +91,7 @@ impl Compositor {
         self.surface.borrow_mut()
     }
 
-    pub fn draw(&mut self, content: Primitive) {
+    pub fn draw(&mut self, primitives: Primitive) {
         let mut swap_chain = self.device.create_swap_chain(
             &self.surface.surface,
             &wgpu::SwapChainDescriptor {
@@ -128,51 +130,47 @@ impl Compositor {
             depth_stencil_attachment: None,
         });
 
-        // TODO: Add logic for rendering Primitive type without this bodge - this is part of the layout work
-        let primitive = match content {
-            Primitive::None => panic!("Wrong primitive type received in compositor due to bodge"),
-            Primitive::Quad {
-                position,
-                color,
-                size,
-            } => QuadInstance {
-                position,
-                color,
-                size,
-            },
-            Primitive::Group(_) => {
-                panic!("Wrong primitive type received in compositor due to bodge")
-            }
-        };
+        let layer = Layer::generate(&primitives);
 
-        self.quad_pipeline.draw(
-            &self.device,
-            &mut encoder,
-            &mut self.staging_belt,
-            &frame.output.view,
-            &[primitive],
-        );
-
-        // self.text_pipeline.queue(Section {
-        //     screen_position: (40.0, 40.0),
-        //     bounds: (self.surface.height() as f32, self.surface.width() as f32),
-        //     text: vec![Text::new("Test")
-        //         .with_color([0.0, 0.0, 0.0, 1.0])
-        //         .with_scale(40.0)],
-        //     ..Section::default()
-        // });
-
-        self.text_pipeline
-            .draw_brush
-            .draw_queued(
+        if !layer.quads.is_empty() {
+            self.quad_pipeline.draw(
                 &self.device,
-                &mut self.staging_belt,
                 &mut encoder,
+                &mut self.staging_belt,
                 &frame.output.view,
-                self.surface.width(),
-                self.surface.height(),
+                &layer.quads,
             )
-            .expect("Text draw queued");
+        }
+
+        if !layer.text.is_empty() {
+            for text in layer.text.iter() {
+                let section = Section {
+                    screen_position: (text.bounds.x, text.bounds.y),
+                    bounds: (text.bounds.width, text.bounds.height),
+                    layout: Default::default(),
+                    text: vec![Text::new(&text.content).with_scale(
+                        wgpu_glyph::ab_glyph::PxScale {
+                            x: text.size,
+                            y: text.size,
+                        },
+                    )],
+                };
+
+                self.text_pipeline.queue(section);
+            }
+
+            self.text_pipeline
+                .draw_brush
+                .draw_queued(
+                    &self.device,
+                    &mut self.staging_belt,
+                    &mut encoder,
+                    &frame.output.view,
+                    self.surface.width(),
+                    self.surface.height(),
+                )
+                .expect("Text draw queued");
+        }
 
         self.staging_belt.finish();
         self.queue.submit(Some(encoder.finish()));
@@ -187,5 +185,9 @@ impl Compositor {
 
     pub fn resize_window(&mut self, width: u32, height: u32) {
         self.surface.resize(&self.device, width, height);
+    }
+
+    pub fn measure_text(&mut self, contents: &str, size: f32, bounds: Size) -> (f32, f32) {
+        self.text_pipeline.measure(contents, size, bounds)
     }
 }

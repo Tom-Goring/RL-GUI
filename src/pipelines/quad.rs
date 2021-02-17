@@ -1,4 +1,4 @@
-use crate::primitives::quad::QuadInstance;
+use crate::primitives::quad::Quad;
 use crate::primitives::vertex::Vertex;
 use wgpu::util::DeviceExt;
 
@@ -79,7 +79,7 @@ impl Pipeline {
 
             let instance_buffer = device.create_buffer(&wgpu::BufferDescriptor {
                 label: Some("Quad Instance Buffer"),
-                size: std::mem::size_of::<QuadInstance>() as u64 * 10000 as u64,
+                size: std::mem::size_of::<Quad>() as u64 * 10000 as u64,
                 usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
                 mapped_at_creation: false,
             });
@@ -128,7 +128,7 @@ impl Pipeline {
             depth_stencil_state: None,
             vertex_state: wgpu::VertexStateDescriptor {
                 index_format: wgpu::IndexFormat::Uint16,
-                vertex_buffers: &[Vertex::desc(), QuadInstance::desc()],
+                vertex_buffers: &[Vertex::desc(), Quad::desc()],
             },
             sample_count: 1,
             sample_mask: !0,
@@ -149,7 +149,7 @@ impl Pipeline {
         encoder: &mut wgpu::CommandEncoder,
         staging_belt: &mut wgpu::util::StagingBelt,
         target: &wgpu::TextureView,
-        instances: &[QuadInstance],
+        instances: &[Quad],
     ) {
         let instance_bytes = bytemuck::cast_slice(instances);
 

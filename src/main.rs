@@ -6,6 +6,8 @@ use rl_gui::application::run;
 use rl_gui::element::Element;
 use rl_gui::widgets::button;
 use rl_gui::widgets::button::Button;
+use rl_gui::widgets::text::Text;
+use rl_gui::Length;
 
 fn main() {
     let event_loop = EventLoop::new();
@@ -13,7 +15,7 @@ fn main() {
     window.set_title("Hello World");
     window.set_inner_size(LogicalSize::new(1000, 600));
 
-    // TODO: move the eventloop and window creation inside of the run function
+    // TODO: move the event loop and window creation inside of the run function
     run::<Test>(event_loop, window);
 }
 
@@ -69,14 +71,14 @@ impl Application for Test {
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        let rectangle = Button::new(
+        Button::new(
             &mut self.button,
-            Some(String::from("Hello")),
-            0.1,
-            0.1,
+            Text::new("Hello There", Some(40), Length::Shrink, Length::Shrink).into(),
+            Length::Shrink,
+            Length::Shrink,
             Some(TestMessage::RectangleClicked),
             self.color.to_rgb(),
-        );
-        rectangle.into()
+        )
+        .into()
     }
 }

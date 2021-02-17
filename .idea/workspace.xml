@@ -24,30 +24,32 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add widget and message logic and an initial test button widget">
-      <change afterPath="$PROJECT_DIR$/src/core/bounds.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/size.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/primitives/text.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add initial text pipeline &amp; layout work">
+      <change afterPath="$PROJECT_DIR$/src/layout/limits.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/layout/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/primitives/layer.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/widgets/text.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application_state.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/compositor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/bounds.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/bounds.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/size.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/size.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/quad.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/text.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/point.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/primitives/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/primitives/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/quad.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/primitives/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/length.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/viewport.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/viewport.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/button.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/button.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/row.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,10 +127,10 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\layout" />
+      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\core" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\wgpu" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\primitives" />
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
-      <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\old" />
     </key>
   </component>
   <component name="RunManager">
@@ -231,7 +233,10 @@
       <workItem from="1610647559165" duration="1597000" />
       <workItem from="1613005587623" duration="590000" />
       <workItem from="1613408421893" duration="8521000" />
-      <workItem from="1613419675079" duration="1454000" />
+      <workItem from="1613419675079" duration="2194000" />
+      <workItem from="1613514874896" duration="732000" />
+      <workItem from="1613525794476" duration="2042000" />
+      <workItem from="1613527916291" duration="9702000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -310,7 +315,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610651369891</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Add initial text pipeline &amp; layout work">
+      <created>1613421180822</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1613421180822</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,7 +352,8 @@
     <MESSAGE value="Refactor &amp; add initial quad pipeline" />
     <MESSAGE value="Add triangle instancing - needs cleanup &amp; rebase" />
     <MESSAGE value="Add widget and message logic and an initial test button widget" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add widget and message logic and an initial test button widget" />
+    <MESSAGE value="Add initial text pipeline &amp; layout work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add initial text pipeline &amp; layout work" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

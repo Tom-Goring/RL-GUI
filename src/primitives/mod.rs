@@ -1,5 +1,7 @@
+use crate::core::bounds::Bounds;
+
+pub mod layer;
 pub mod quad;
-pub mod text;
 pub mod triangle;
 pub mod vertex;
 
@@ -7,9 +9,15 @@ pub mod vertex;
 pub enum Primitive {
     None,
     Quad {
-        position: [f32; 2],
+        bounds: Bounds,
         color: [f32; 3],
-        size: [f32; 2],
     },
-    Group(Vec<Primitive>),
+    Text {
+        content: String,
+        bounds: Bounds,
+        size: f32,
+    },
+    Group {
+        primitives: Vec<Primitive>,
+    },
 }
