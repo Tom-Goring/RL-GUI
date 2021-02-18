@@ -1,5 +1,4 @@
 use crate::compositor::Compositor;
-use crate::core::bounds::Bounds;
 use crate::core::point::Point;
 use crate::element::Element;
 use crate::layout::limits::Limits;
@@ -28,16 +27,14 @@ impl<'a, Message: Clone> Button<'a, Message> {
     pub fn new(
         state: &'a mut State,
         content: Element<'a, Message>,
-        width: Length,
-        height: Length,
         on_press: Option<Message>,
         color: [f32; 3],
     ) -> Self {
         Button {
             state,
             content,
-            width,
-            height,
+            height: Length::Shrink,
+            width: Length::Shrink,
             on_press,
             color,
             min_width: 0,
@@ -62,17 +59,16 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
         &mut self,
         event: WindowEvent,
         cursor_position: Point,
-        viewport: Viewport,
+        _viewport: Viewport,
         messages: &mut Vec<Message>,
-        bounds: Bounds,
+        layout: Node,
     ) {
+        let bounds = layout.bounds;
         if let WindowEvent::MouseInput { button, state, .. } = event {
             if let MouseButton::Left = button {
                 match state {
                     ElementState::Pressed => {
-                        if self.on_press.is_some()
-                            && bounds.contains(viewport.normalise_window_coords(cursor_position))
-                        {
+                        if self.on_press.is_some() && bounds.contains(cursor_position) {
                             self.state.is_pressed = true;
                         }
                     }
@@ -80,9 +76,7 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
                         if let Some(on_press) = self.on_press.clone() {
                             if self.state.is_pressed {
                                 self.state.is_pressed = false;
-                                if bounds
-                                    .contains(viewport.normalise_window_coords(cursor_position))
-                                {
+                                if bounds.contains(cursor_position) {
                                     messages.push(on_press);
                                 }
                             }

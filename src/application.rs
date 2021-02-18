@@ -5,7 +5,6 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
 use crate::application_state::ApplicationState;
-use crate::core::bounds::Bounds;
 use crate::core::size::Size;
 use crate::element::Element;
 use crate::layout::limits::Limits;
@@ -27,9 +26,10 @@ pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
 
 // Add compositor as type argument to allow for use of standardised rendering in app.render()
 pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
-    let mut compositor = block_on(super::compositor::Compositor::new(&window));
-
+    let mut compositor = block_on(super::compositor::Compositor::new());
     let viewport = Viewport::new(window.inner_size().width, window.inner_size().height);
+    let surface = compositor.create_surface(&window);
+
     let mut state = ApplicationState::new(viewport);
 
     let mut app = A::init();
@@ -44,37 +44,23 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                 if should_exit(&event) {
                     *control_flow = ControlFlow::Exit;
                 }
-                match event {
-                    WindowEvent::Resized(new_size) => {
-                        compositor.resize_window(new_size.width, new_size.height);
-                    }
-                    WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                        compositor.resize_window(new_inner_size.width, new_inner_size.height)
-                    }
-                    _ => {
-                        state.update(&event);
-                        {
-                            // For every widget we need to pass it its bounds
-                            // Therefore we need some sort of data structure to hold all widgets and their bounds
-                            let mut ui = app.view();
-                            // TODO: develop system to calculate locations and sizes based on user given data
-                            ui.on_event(
-                                event,
-                                state.cursor_position,
-                                state.viewport,
-                                &mut messages,
-                                Bounds {
-                                    x: 0.0,
-                                    y: 0.0,
-                                    width: 1.0,
-                                    height: 1.0,
-                                },
-                            );
-                        }
-                        for message in messages.drain(..) {
-                            app.update(message);
-                        }
-                    }
+                state.update(&event);
+                {
+                    let mut ui = app.view();
+                    let layout = ui.layout(
+                        &mut compositor,
+                        Limits::new(Size::ZERO, state.logical_size()),
+                    );
+                    ui.on_event(
+                        event,
+                        state.cursor_position,
+                        state.viewport,
+                        &mut messages,
+                        layout,
+                    );
+                }
+                for message in messages.drain(..) {
+                    app.update(message);
                 }
             }
             Event::DeviceEvent { .. } => {}
@@ -83,13 +69,21 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
             Event::Resumed => {}
             Event::MainEventsCleared => window.request_redraw(),
             Event::RedrawRequested(_) => {
+                let physical_size = state.viewport.physical_size();
+
+                let mut swap_chain = compositor.create_swap_chain(
+                    &surface,
+                    physical_size.width,
+                    physical_size.height,
+                );
+
                 let ui = app.view();
                 let layout = ui.layout(
                     &mut compositor,
                     Limits::new(Size::ZERO, state.logical_size()),
                 );
                 let primitives = ui.draw(layout);
-                compositor.draw(primitives);
+                compositor.draw(&mut swap_chain, primitives, &viewport);
             }
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}

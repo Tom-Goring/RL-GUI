@@ -1,7 +1,7 @@
 use super::point::Point;
 use super::size::Size;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 /// Holds data on an arbitrary set of bounds. Tracks a set of xy coordinates alongside a width and height value.
 pub struct Bounds<T = f32> {
     pub x: T,
@@ -20,10 +20,19 @@ impl Bounds<f32> {
         }
     }
 
+    pub fn with_size(size: Size) -> Self {
+        Self {
+            x: 0.0,
+            y: 0.0,
+            width: size.width,
+            height: size.height,
+        }
+    }
+
     pub fn contains(&self, point: Point) -> bool {
         point.x > self.x
             && point.x < self.x + self.width
-            && point.y < self.y
-            && point.y > self.y - self.height
+            && point.y > self.y
+            && point.y < self.y + self.height
     }
 }

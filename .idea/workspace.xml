@@ -24,32 +24,25 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add initial text pipeline &amp; layout work">
-      <change afterPath="$PROJECT_DIR$/src/layout/limits.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/layout/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/primitives/layer.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/widgets/text.rs" afterDir="false" />
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Progress towards a layout system and the rendering of multiple widgets simultaneously">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application_state.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/compositor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/bounds.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/bounds.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/size.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/size.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pipelines/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/quad.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/text.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/quad.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/length.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/primitives/layer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/layer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/primitives/vertex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/vertex.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/quad.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/quad.vert" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/surface.rs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/viewport.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/viewport.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/button.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/button.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/row.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/text.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,12 +126,7 @@
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.Run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -153,6 +141,30 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test viewport::tests::normalise_coords" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package rl_gui --lib viewport::tests::normalise_coords -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.Test viewport::tests::normalise_coords" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="externalLinter" value="Clippy" />
@@ -236,7 +248,11 @@
       <workItem from="1613419675079" duration="2194000" />
       <workItem from="1613514874896" duration="732000" />
       <workItem from="1613525794476" duration="2042000" />
-      <workItem from="1613527916291" duration="9702000" />
+      <workItem from="1613527916291" duration="10708000" />
+      <workItem from="1613579376877" duration="4711000" />
+      <workItem from="1613584201459" duration="8000" />
+      <workItem from="1613584217992" duration="3357000" />
+      <workItem from="1613594323666" duration="11668000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -322,7 +338,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613421180822</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Progress towards a layout system and the rendering of multiple widgets simultaneously">
+      <created>1613538002581</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1613538002581</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -353,7 +376,19 @@
     <MESSAGE value="Add triangle instancing - needs cleanup &amp; rebase" />
     <MESSAGE value="Add widget and message logic and an initial test button widget" />
     <MESSAGE value="Add initial text pipeline &amp; layout work" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add initial text pipeline &amp; layout work" />
+    <MESSAGE value="Progress towards a layout system and the rendering of multiple widgets simultaneously" />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress towards a layout system and the rendering of multiple widgets simultaneously" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/main.rs</url>
+          <line>80</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

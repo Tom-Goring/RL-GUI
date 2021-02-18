@@ -4,10 +4,10 @@ use crate::core::size::Size;
 use crate::pipelines;
 use crate::primitives::layer::Layer;
 use crate::primitives::Primitive;
-use crate::surface::Surface;
+use crate::viewport::Viewport;
 use futures::task::SpawnExt;
 use glyph_brush::Section;
-use std::borrow::BorrowMut;
+use raw_window_handle::HasRawWindowHandle;
 use wgpu_glyph::Text;
 
 /// Data structure to combine elements together and draw them.
@@ -15,10 +15,9 @@ use wgpu_glyph::Text;
 /// A compositor takes multiple drawable types and 'squishes' them together into a single image to be rendered by the
 /// gpu
 pub struct Compositor {
-    _instance: wgpu::Instance,
+    instance: wgpu::Instance,
     device: wgpu::Device,
     queue: wgpu::Queue,
-    surface: Surface,
     staging_belt: wgpu::util::StagingBelt,
     local_pool: futures::executor::LocalPool,
 
@@ -28,7 +27,7 @@ pub struct Compositor {
 }
 
 impl Compositor {
-    pub async fn new(window: &winit::window::Window) -> Self {
+    pub async fn new() -> Self {
         let instance = wgpu::Instance::new(wgpu::BackendBit::PRIMARY);
 
         let adapter = instance
@@ -54,14 +53,6 @@ impl Compositor {
             .await
             .unwrap();
 
-        let surface = super::surface::Surface::new(
-            &device,
-            unsafe { instance.create_surface(window) },
-            window.inner_size().width,
-            window.inner_size().height,
-            wgpu::PresentMode::Mailbox,
-        );
-
         let staging_belt = wgpu::util::StagingBelt::new(10 * 1024);
         let local_pool = futures::executor::LocalPool::new();
 
@@ -75,10 +66,9 @@ impl Compositor {
             pipelines::text::Pipeline::new(&device, wgpu::TextureFormat::Bgra8UnormSrgb);
 
         Self {
-            _instance: instance,
+            instance,
             device,
             queue,
-            surface,
             staging_belt,
             local_pool,
             triangle_pipeline,
@@ -87,22 +77,34 @@ impl Compositor {
         }
     }
 
-    pub fn surface(&mut self) -> &mut Surface {
-        self.surface.borrow_mut()
+    pub fn create_surface<W: HasRawWindowHandle>(&mut self, window: &W) -> wgpu::Surface {
+        unsafe { self.instance.create_surface(window) }
     }
 
-    pub fn draw(&mut self, primitives: Primitive) {
-        let mut swap_chain = self.device.create_swap_chain(
-            &self.surface.surface,
+    pub fn create_swap_chain(
+        &mut self,
+        surface: &wgpu::Surface,
+        width: u32,
+        height: u32,
+    ) -> wgpu::SwapChain {
+        self.device.create_swap_chain(
+            surface,
             &wgpu::SwapChainDescriptor {
                 usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
                 format: wgpu::TextureFormat::Bgra8UnormSrgb,
-                width: self.surface.width(),
-                height: self.surface.height(),
+                width,
+                height,
                 present_mode: wgpu::PresentMode::Fifo,
             },
-        );
+        )
+    }
 
+    pub fn draw(
+        &mut self,
+        swap_chain: &mut wgpu::SwapChain,
+        primitives: Primitive,
+        viewport: &Viewport,
+    ) {
         let frame = swap_chain.get_current_frame().expect("Next frame");
 
         let mut encoder = self
@@ -130,7 +132,8 @@ impl Compositor {
             depth_stencil_attachment: None,
         });
 
-        let layer = Layer::generate(&primitives);
+        let coord_translator = viewport.projection();
+        let layer = Layer::generate(&primitives, viewport);
 
         if !layer.quads.is_empty() {
             self.quad_pipeline.draw(
@@ -139,6 +142,8 @@ impl Compositor {
                 &mut self.staging_belt,
                 &frame.output.view,
                 &layer.quads,
+                layer.bounds(),
+                coord_translator,
             )
         }
 
@@ -166,8 +171,8 @@ impl Compositor {
                     &mut self.staging_belt,
                     &mut encoder,
                     &frame.output.view,
-                    self.surface.width(),
-                    self.surface.height(),
+                    viewport.physical_size().width,
+                    viewport.physical_size().height,
                 )
                 .expect("Text draw queued");
         }
@@ -181,10 +186,6 @@ impl Compositor {
             .expect("Recall staging belt");
 
         self.local_pool.run_until_stalled();
-    }
-
-    pub fn resize_window(&mut self, width: u32, height: u32) {
-        self.surface.resize(&self.device, width, height);
     }
 
     pub fn measure_text(&mut self, contents: &str, size: f32, bounds: Size) -> (f32, f32) {

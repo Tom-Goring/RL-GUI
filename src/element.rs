@@ -1,5 +1,4 @@
 use crate::compositor::Compositor;
-use crate::core::bounds::Bounds;
 use crate::core::point::Point;
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
@@ -34,9 +33,9 @@ impl<'a, Message> Element<'a, Message> {
         cursor_position: Point,
         viewport: Viewport,
         messages: &mut Vec<Message>,
-        bounds: Bounds,
+        layout: Node,
     ) {
         self.content
-            .on_event(event, cursor_position, viewport, messages, bounds);
+            .on_event(event, cursor_position, viewport, messages, layout);
     }
 }

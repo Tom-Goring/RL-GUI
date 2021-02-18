@@ -1,5 +1,4 @@
 use crate::compositor::Compositor;
-use crate::core::bounds::Bounds;
 use crate::core::length::Length;
 use crate::core::point::Point;
 use crate::core::size::Size;
@@ -19,17 +18,12 @@ pub struct Text {
 }
 
 impl Text {
-    pub fn new<T: Into<String>>(
-        label: T,
-        size: Option<u16>,
-        width: Length,
-        height: Length,
-    ) -> Self {
+    pub fn new<T: Into<String>>(label: T, size: Option<u16>) -> Self {
         Text {
             content: label.into(),
             size,
-            width,
-            height,
+            width: Length::Shrink,
+            height: Length::Shrink,
         }
     }
 }
@@ -49,7 +43,7 @@ impl<Message> Widget<Message> for Text {
         _cursor_position: Point,
         _viewport: Viewport,
         _messages: &mut Vec<Message>,
-        _bounds: Bounds<f32>,
+        _layout: Node,
     ) {
     }
 

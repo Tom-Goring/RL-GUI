@@ -7,7 +7,6 @@ use rl_gui::element::Element;
 use rl_gui::widgets::button;
 use rl_gui::widgets::button::Button;
 use rl_gui::widgets::text::Text;
-use rl_gui::Length;
 
 fn main() {
     let event_loop = EventLoop::new();
@@ -30,16 +29,16 @@ impl Color {
     pub fn to_rgb(&self) -> [f32; 3] {
         match self {
             Color::Red => [1.0, 0.0, 0.0],
-            Color::Blue => [0.0, 1.0, 0.0],
-            Color::Green => [0.0, 0.0, 1.0],
+            Color::Green => [0.0, 1.0, 0.0],
+            Color::Blue => [0.0, 0.0, 1.0],
         }
     }
 
     pub fn next(&self) -> Self {
         match self {
-            Color::Red => Color::Blue,
-            Color::Blue => Color::Green,
-            Color::Green => Color::Red,
+            Color::Red => Color::Green,
+            Color::Green => Color::Blue,
+            Color::Blue => Color::Red,
         }
     }
 }
@@ -66,16 +65,22 @@ impl Application for Test {
 
     fn update(&mut self, message: Self::Message) {
         match message {
-            TestMessage::RectangleClicked => self.color = self.color.next(),
+            TestMessage::RectangleClicked => {
+                self.color = self.color.next();
+            }
         }
     }
 
     fn view(&mut self) -> Element<Self::Message> {
+        let text: String = match self.color {
+            Color::Red => "Red".into(),
+            Color::Blue => "Blue".into(),
+            Color::Green => "Green".into(),
+        };
+
         Button::new(
             &mut self.button,
-            Text::new("Hello There", Some(40), Length::Shrink, Length::Shrink).into(),
-            Length::Shrink,
-            Length::Shrink,
+            Text::new(text, Some(30)).into(),
             Some(TestMessage::RectangleClicked),
             self.color.to_rgb(),
         )

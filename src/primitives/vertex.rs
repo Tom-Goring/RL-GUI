@@ -15,7 +15,7 @@ impl Vertex {
             attributes: &[wgpu::VertexAttributeDescriptor {
                 offset: 0,
                 shader_location: 0,
-                format: wgpu::VertexFormat::Float3,
+                format: wgpu::VertexFormat::Float2,
             }],
         }
     }

@@ -1,5 +1,4 @@
 use crate::compositor::Compositor;
-use crate::core::bounds::Bounds;
 use crate::core::point::Point;
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
@@ -20,7 +19,7 @@ pub trait Widget<Message> {
         cursor_position: Point,
         viewport: Viewport,
         messages: &mut Vec<Message>,
-        bounds: Bounds,
+        layout: Node,
     );
     fn layout(&self, renderer: &mut Compositor, limits: Limits) -> Node;
 }

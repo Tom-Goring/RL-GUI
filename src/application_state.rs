@@ -21,17 +21,12 @@ impl ApplicationState {
             WindowEvent::CursorMoved { position, .. } => {
                 self.cursor_position = Point::new(position.x as f32, position.y as f32)
             }
-            // WindowEvent::MouseInput { state, button, .. } => match state {
-            //     ElementState::Pressed => {
-            //         if let MouseButton::Left = button {
-            //             println!(
-            //                 "{:?}",
-            //                 self.viewport.normalise_window_coords(self.cursor_position)
-            //             )
-            //         }
-            //     }
-            //     ElementState::Released => {}
-            // },
+            WindowEvent::Resized(new_size) => {
+                self.viewport = Viewport::new(new_size.width, new_size.height);
+            }
+            WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                self.viewport = Viewport::new(new_inner_size.width, new_inner_size.height);
+            }
             _ => {}
         }
     }

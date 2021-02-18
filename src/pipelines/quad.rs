@@ -1,5 +1,8 @@
+use crate::core::bounds::Bounds;
 use crate::primitives::quad::Quad;
 use crate::primitives::vertex::Vertex;
+use glam::Mat4;
+use std::mem;
 use wgpu::util::DeviceExt;
 
 const VERTICES: [Vertex; 4] = [
@@ -24,6 +27,8 @@ pub struct Pipeline {
     vertex_buffer: wgpu::Buffer,
     index_buffer: wgpu::Buffer,
     instance_buffer: wgpu::Buffer,
+    constants: wgpu::BindGroup,
+    constants_buffer: wgpu::Buffer,
 }
 
 impl Pipeline {
@@ -64,6 +69,35 @@ impl Pipeline {
             (vs_module, fs_module)
         };
 
+        let constant_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("Quad uniforms layout"),
+            entries: &[wgpu::BindGroupLayoutEntry {
+                binding: 0,
+                visibility: wgpu::ShaderStage::VERTEX,
+                ty: wgpu::BindingType::UniformBuffer {
+                    dynamic: false,
+                    min_binding_size: wgpu::BufferSize::new(mem::size_of::<Uniforms>() as u64),
+                },
+                count: None,
+            }],
+        });
+
+        let constants_buffer = device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("Quad uniforms buffer"),
+            size: mem::size_of::<Uniforms>() as u64,
+            usage: wgpu::BufferUsage::UNIFORM | wgpu::BufferUsage::COPY_DST,
+            mapped_at_creation: false,
+        });
+
+        let constants = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: Some("Quad uniforms bind group"),
+            layout: &constant_layout,
+            entries: &[wgpu::BindGroupEntry {
+                binding: 0,
+                resource: wgpu::BindingResource::Buffer(constants_buffer.slice(..)),
+            }],
+        });
+
         let (vertex_buffer, index_buffer, instance_buffer) = {
             let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
                 label: Some("Quad Vertex Buffer"),
@@ -90,7 +124,7 @@ impl Pipeline {
         let render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                 label: Some("Quad Render Pipeline Layout"),
-                bind_group_layouts: &[],
+                bind_group_layouts: &[&constant_layout],
                 push_constant_ranges: &[],
             });
 
@@ -107,7 +141,7 @@ impl Pipeline {
             }),
             rasterization_state: Some(wgpu::RasterizationStateDescriptor {
                 front_face: wgpu::FrontFace::Ccw,
-                cull_mode: wgpu::CullMode::Back,
+                cull_mode: wgpu::CullMode::None,
                 ..Default::default()
             }),
             primitive_topology: wgpu::PrimitiveTopology::TriangleList,
@@ -140,6 +174,8 @@ impl Pipeline {
             vertex_buffer,
             index_buffer,
             instance_buffer,
+            constants,
+            constants_buffer,
         }
     }
 
@@ -150,7 +186,25 @@ impl Pipeline {
         staging_belt: &mut wgpu::util::StagingBelt,
         target: &wgpu::TextureView,
         instances: &[Quad],
+        bounds: Bounds,
+        translator: Mat4,
     ) {
+        let uniforms = Uniforms::new(translator, 1.0);
+
+        // println!("{:?}", uniforms);
+
+        {
+            let mut constants_buffer = staging_belt.write_buffer(
+                encoder,
+                &self.constants_buffer,
+                0,
+                wgpu::BufferSize::new(mem::size_of::<Uniforms>() as u64).unwrap(),
+                device,
+            );
+
+            constants_buffer.copy_from_slice(bytemuck::bytes_of(&uniforms));
+        }
+
         let instance_bytes = bytemuck::cast_slice(instances);
 
         let mut instance_buffer = staging_belt.write_buffer(
@@ -166,10 +220,36 @@ impl Pipeline {
         {
             let mut render_pass = super::begin_load_render_pass(encoder, &target);
             render_pass.set_pipeline(&self.render_pipeline);
+            render_pass.set_bind_group(0, &self.constants, &[]);
+            render_pass.set_index_buffer(self.index_buffer.slice(..));
             render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
             render_pass.set_vertex_buffer(1, self.instance_buffer.slice(..));
-            render_pass.set_index_buffer(self.index_buffer.slice(..));
+            render_pass.set_scissor_rect(
+                bounds.x as u32,
+                bounds.y as u32,
+                bounds.width as u32,
+                bounds.height as u32 + 1,
+            );
             render_pass.draw_indexed(0..INDICES.len() as u32, 0, 0..instances.len() as u32);
         }
     }
 }
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+struct Uniforms {
+    transform: [f32; 16],
+    scale: f32,
+}
+
+impl Uniforms {
+    fn new(translator: Mat4, scale: f32) -> Uniforms {
+        Self {
+            transform: *translator.as_ref(),
+            scale,
+        }
+    }
+}
+
+unsafe impl bytemuck::Pod for Uniforms {}
+unsafe impl bytemuck::Zeroable for Uniforms {}
