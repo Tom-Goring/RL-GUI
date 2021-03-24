@@ -24,24 +24,21 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Progress towards a layout system and the rendering of multiple widgets simultaneously">
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation">
+      <change afterPath="$PROJECT_DIR$/src/events/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/events/mouse.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/events/window.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application_state.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compositor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/compositor.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/bounds.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/bounds.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layout/limits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/limits.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layout/node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pipelines/quad.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pipelines/quad.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/layer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/layer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/primitives/vertex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/primitives/vertex.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/quad.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/quad.vert" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/surface.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/viewport.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/viewport.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/button.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/button.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/row.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/text.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,9 +123,23 @@
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Run">
+  <component name="RunManager" selected="Cargo.Test layout::limits::tests::test_max_width">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test layout::limits::tests::test_max_width" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package rl_gui --lib layout::limits::tests::test_max_width -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -155,13 +166,9 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test layout::limits::tests::test_max_width" />
         <item itemvalue="Cargo.Test viewport::tests::normalise_coords" />
       </list>
     </recent_temporary>
@@ -252,7 +259,24 @@
       <workItem from="1613579376877" duration="4711000" />
       <workItem from="1613584201459" duration="8000" />
       <workItem from="1613584217992" duration="3357000" />
-      <workItem from="1613594323666" duration="11668000" />
+      <workItem from="1613594323666" duration="12624000" />
+      <workItem from="1613616365177" duration="176000" />
+      <workItem from="1613859330320" duration="60000" />
+      <workItem from="1613861037492" duration="636000" />
+      <workItem from="1613866492225" duration="474000" />
+      <workItem from="1613869656831" duration="82000" />
+      <workItem from="1614120251936" duration="2278000" />
+      <workItem from="1614184564654" duration="839000" />
+      <workItem from="1614185744636" duration="38000" />
+      <workItem from="1614208026882" duration="858000" />
+      <workItem from="1614213493122" duration="1257000" />
+      <workItem from="1614707812855" duration="2845000" />
+      <workItem from="1614711918183" duration="1520000" />
+      <workItem from="1615986024627" duration="263000" />
+      <workItem from="1616597458433" duration="5387000" />
+      <workItem from="1616602982298" duration="22000" />
+      <workItem from="1616603053522" duration="2316000" />
+      <workItem from="1616605483229" duration="673000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -345,7 +369,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613538002581</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation">
+      <created>1613606710919</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1613606710919</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -377,18 +408,8 @@
     <MESSAGE value="Add widget and message logic and an initial test button widget" />
     <MESSAGE value="Add initial text pipeline &amp; layout work" />
     <MESSAGE value="Progress towards a layout system and the rendering of multiple widgets simultaneously" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress towards a layout system and the rendering of multiple widgets simultaneously" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/main.rs</url>
-          <line>80</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

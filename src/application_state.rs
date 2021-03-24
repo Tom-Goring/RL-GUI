@@ -1,7 +1,10 @@
 use crate::core::point::Point;
 use crate::core::size::Size;
+use crate::events::Event;
 use crate::viewport::Viewport;
-use winit::event::WindowEvent;
+
+use crate::events::mouse;
+use crate::events::window;
 
 pub struct ApplicationState {
     pub cursor_position: Point,
@@ -16,17 +19,19 @@ impl ApplicationState {
         }
     }
 
-    pub fn update(&mut self, event: &winit::event::WindowEvent<'_>) {
+    pub fn update(&mut self, event: crate::events::Event) {
         match event {
-            WindowEvent::CursorMoved { position, .. } => {
-                self.cursor_position = Point::new(position.x as f32, position.y as f32)
-            }
-            WindowEvent::Resized(new_size) => {
-                self.viewport = Viewport::new(new_size.width, new_size.height);
-            }
-            WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                self.viewport = Viewport::new(new_inner_size.width, new_inner_size.height);
-            }
+            Event::Mouse(mouse_event) => match mouse_event {
+                mouse::Event::CursorMoved(position) => {
+                    self.cursor_position = Point::new(position.x, position.y)
+                }
+                _ => {}
+            },
+            Event::Window(window_event) => match window_event {
+                window::Event::Resized { width, height } => {
+                    self.viewport = Viewport::new(width, height)
+                }
+            },
             _ => {}
         }
     }

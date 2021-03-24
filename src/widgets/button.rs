@@ -1,12 +1,13 @@
 use crate::compositor::Compositor;
 use crate::core::point::Point;
 use crate::element::Element;
+use crate::events::mouse;
+use crate::events::Event;
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 use crate::Length;
-use winit::event::{ElementState, MouseButton, WindowEvent};
 
 /// All widgets should have a draw function with takes the location to draw said widget to
 /// Unsure what state a widget should hold right now.
@@ -57,22 +58,25 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
 
     fn on_event(
         &mut self,
-        event: WindowEvent,
+        event: Event,
         cursor_position: Point,
         _viewport: Viewport,
         messages: &mut Vec<Message>,
         layout: Node,
     ) {
         let bounds = layout.bounds;
-        if let WindowEvent::MouseInput { button, state, .. } = event {
-            if let MouseButton::Left = button {
-                match state {
-                    ElementState::Pressed => {
+
+        if let Event::Mouse(event) = event {
+            match event {
+                mouse::Event::Pressed(button) => {
+                    if let mouse::Button::Left = button {
                         if self.on_press.is_some() && bounds.contains(cursor_position) {
                             self.state.is_pressed = true;
                         }
                     }
-                    ElementState::Released => {
+                }
+                mouse::Event::Released(button) => {
+                    if let mouse::Button::Left = button {
                         if let Some(on_press) = self.on_press.clone() {
                             if self.state.is_pressed {
                                 self.state.is_pressed = false;
@@ -83,6 +87,7 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
                         }
                     }
                 }
+                _ => {}
             }
         }
     }

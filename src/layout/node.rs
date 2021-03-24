@@ -5,7 +5,7 @@ use crate::core::size::Size;
 #[derive(Clone)]
 pub struct Node {
     pub bounds: Bounds,
-    children: Vec<Node>,
+    pub children: Vec<Node>,
 }
 
 impl Node {

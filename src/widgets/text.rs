@@ -3,12 +3,12 @@ use crate::core::length::Length;
 use crate::core::point::Point;
 use crate::core::size::Size;
 use crate::element::Element;
+use crate::events::Event;
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 use crate::widgets::Widget;
-use winit::event::WindowEvent;
 
 pub struct Text {
     content: String,
@@ -39,7 +39,7 @@ impl<Message> Widget<Message> for Text {
 
     fn on_event(
         &mut self,
-        _event: WindowEvent,
+        _event: Event,
         _cursor_position: Point,
         _viewport: Viewport,
         _messages: &mut Vec<Message>,

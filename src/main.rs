@@ -11,7 +11,7 @@ use rl_gui::widgets::text::Text;
 fn main() {
     let event_loop = EventLoop::new();
     let window = winit::window::Window::new(&event_loop).unwrap();
-    window.set_title("Hello World");
+    window.set_title("Test GUI");
     window.set_inner_size(LogicalSize::new(1000, 600));
 
     // TODO: move the event loop and window creation inside of the run function
@@ -73,9 +73,9 @@ impl Application for Test {
 
     fn view(&mut self) -> Element<Self::Message> {
         let text: String = match self.color {
-            Color::Red => "Red".into(),
-            Color::Blue => "Blue".into(),
-            Color::Green => "Green".into(),
+            Color::Red => "This is a button".into(),
+            Color::Green => "The button has been clicked".into(),
+            Color::Blue => "The button has been clicked twice".into(),
         };
 
         Button::new(

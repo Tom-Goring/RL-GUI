@@ -3,7 +3,7 @@ use crate::core::size::Size;
 
 // TODO: Add support for padding?
 
-/// Holds data on the minimum w/h, maximum w/h, and some fill thingy
+/// Holds data on the minimum w/h, maximum w/h, and a size to fill up to
 #[derive(Copy, Clone, Debug)]
 pub struct Limits {
     pub min: Size,
@@ -52,9 +52,19 @@ impl Limits {
         self
     }
 
-    /// Generates a new size that fits the given size within the limits.
-    /// Takes the minimum of the given width and the maximum allowed width, and then the max of the fill width and that
-    /// Takes the minimum of the given height and the maximum allowed height, and then the max of the fill height and that
+    // Sets a new max width if it is smaller than the current max width but larger than the current min width
+    pub fn max_width(mut self, max_width: u32) -> Limits {
+        self.max.width = self.max.width.min(max_width as f32).max(self.min.width);
+        self
+    }
+
+    // Sets a new max height if it is smaller than the current max width but larger than the current min width
+    pub fn max_height(mut self, max_height: u32) -> Limits {
+        self.max.height = self.max.height.min(max_height as f32).max(self.min.height);
+        self
+    }
+
+    // Generates a size that fits the given size. The lengths are reduced to the maximum, and increased to the fill
     pub fn resolve(&self, intrinsic_size: Size) -> Size {
         Size::new(
             intrinsic_size
@@ -66,5 +76,18 @@ impl Limits {
                 .min(self.max.height)
                 .max(self.fill.height),
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_max_width() {
+        let mut limits = Limits::new(Size::new(0.0, 0.0), Size::new(1000.0, 1000.0))
+            .width(Length::Shrink)
+            .height(Length::Shrink);
+        println!("{:?}", limits.resolve(Size::new(100.0, 100.0)));
     }
 }

@@ -13,10 +13,14 @@ use crate::viewport::Viewport;
 pub trait Application: 'static + Clone {
     type Message;
 
+    // Initialises the application state. This should contain the initial state of the application and its widgets.
     fn init() -> Self;
-    /// This should handle user defined events, allowing the render function to change its output based on app state
+    // Handles user-defined Messages that are spawned on widget events. Typically follows some form of pattern matching
+    // on the message enum.
     fn update(&mut self, message: Self::Message);
-    /// This should return the element tree to be processed by the compositor
+    // Returns the widget tree. This is a set of (possibly only one) widget(s) each defining it's own layout and view
+    // functions that can be called recursively to generate the necessary positions and primitives to be drawn by the
+    // renderer
     fn view(&mut self) -> Element<Self::Message>;
 }
 
@@ -44,7 +48,8 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                 if should_exit(&event) {
                     *control_flow = ControlFlow::Exit;
                 }
-                state.update(&event);
+                let event = crate::events::Event::from(&event);
+                state.update(event);
                 {
                     let mut ui = app.view();
                     let layout = ui.layout(

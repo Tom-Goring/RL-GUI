@@ -1,11 +1,11 @@
 use crate::compositor::Compositor;
 use crate::core::point::Point;
+use crate::events::Event;
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 use crate::widgets::Widget;
-use winit::event::WindowEvent;
 
 /// A generic widget - it holds any type that can be broken down into primitives via the Widget trait
 pub struct Element<'a, Message> {
@@ -29,7 +29,7 @@ impl<'a, Message> Element<'a, Message> {
 
     pub fn on_event(
         &mut self,
-        event: WindowEvent,
+        event: Event,
         cursor_position: Point,
         viewport: Viewport,
         messages: &mut Vec<Message>,

@@ -5,6 +5,7 @@ pub mod widgets;
 mod application_state;
 mod compositor;
 mod core;
+mod events;
 mod layout;
 mod pipelines;
 mod primitives;
