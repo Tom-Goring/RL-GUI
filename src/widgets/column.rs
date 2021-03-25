@@ -12,7 +12,7 @@ use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 use crate::widgets::Widget;
 
-pub struct Row<'a, Message> {
+pub struct Column<'a, Message> {
     width: Length,
     height: Length,
     max_width: u32,
@@ -22,7 +22,7 @@ pub struct Row<'a, Message> {
     padding: f32,
 }
 
-impl<'a, Message> Row<'a, Message> {
+impl<'a, Message> Column<'a, Message> {
     pub fn new() -> Self {
         Self::with_children(Vec::new())
     }
@@ -48,15 +48,25 @@ impl<'a, Message> Row<'a, Message> {
         self.padding += padding;
         self
     }
+
+    pub fn max_width(mut self, max_width: u32) -> Self {
+        self.max_width = max_width;
+        self
+    }
+
+    pub fn max_height(mut self, max_height: u32) -> Self {
+        self.max_height = max_height;
+        self
+    }
 }
 
-impl<'a, Message> Default for Row<'a, Message> {
+impl<'a, Message> Default for Column<'a, Message> {
     fn default() -> Self {
         Self::with_children(Vec::new())
     }
 }
 
-impl<'a, Message> Widget<Message> for Row<'a, Message> {
+impl<'a, Message> Widget<Message> for Column<'a, Message> {
     fn draw(&self, node: Node) -> Primitive {
         Primitive::Group {
             primitives: self
@@ -95,7 +105,7 @@ impl<'a, Message> Widget<Message> for Row<'a, Message> {
         layout::flex::resolve(
             &self.children,
             Alignment::Center,
-            Axis::Horizontal,
+            Axis::Vertical,
             &limits,
             &mut renderer,
             self.padding,
@@ -103,11 +113,11 @@ impl<'a, Message> Widget<Message> for Row<'a, Message> {
     }
 }
 
-impl<'a, Message> From<Row<'a, Message>> for Element<'a, Message>
+impl<'a, Message> From<Column<'a, Message>> for Element<'a, Message>
 where
     Message: 'a + Clone,
 {
-    fn from(row: Row<'a, Message>) -> Element<'a, Message> {
+    fn from(row: Column<'a, Message>) -> Element<'a, Message> {
         Element::new(row)
     }
 }

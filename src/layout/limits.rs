@@ -85,7 +85,7 @@ mod tests {
 
     #[test]
     fn test_max_width() {
-        let mut limits = Limits::new(Size::new(0.0, 0.0), Size::new(1000.0, 1000.0))
+        let limits = Limits::new(Size::new(0.0, 0.0), Size::new(1000.0, 1000.0))
             .width(Length::Shrink)
             .height(Length::Shrink);
         println!("{:?}", limits.resolve(Size::new(100.0, 100.0)));

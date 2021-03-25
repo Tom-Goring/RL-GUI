@@ -3,6 +3,7 @@ use crate::primitives::quad::Quad;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 
+#[derive(Debug)]
 pub struct Layer {
     pub quads: Vec<Quad>,
     pub text: Vec<Text>,
@@ -12,47 +13,97 @@ pub struct Layer {
 impl Layer {
     pub fn generate(primitive: &Primitive, viewport: &Viewport) -> Self {
         let bounds = Bounds::with_size(viewport.logical_size());
-        match primitive {
-            Primitive::Group { primitives } => {
-                let mut quads = Vec::new();
-                let mut text = Vec::new();
-                for primitive in primitives {
-                    match primitive {
-                        Primitive::Quad { bounds, color } => {
-                            quads.push(Quad {
-                                position: [bounds.x, bounds.y],
-                                color: *color,
-                                size: [bounds.width, bounds.height],
-                            });
-                        }
-                        Primitive::Text {
-                            content,
-                            bounds,
-                            size,
-                        } => text.push(Text {
-                            content: content.clone(),
-                            bounds: *bounds,
-                            size: *size,
-                        }),
-                        _ => {}
-                    }
-                }
-                Self {
-                    quads,
-                    text,
-                    bounds,
-                }
-            }
-            _ => Self {
-                quads: Vec::new(),
-                text: Vec::new(),
-                bounds,
-            },
+        let mut quads = Vec::new();
+        let mut text = Vec::new();
+        process_primitive(primitive.clone(), bounds, &mut quads, &mut text);
+        Layer {
+            quads,
+            text,
+            bounds,
         }
     }
 
     pub fn bounds(&self) -> Bounds {
         self.bounds
+    }
+}
+
+fn process_primitive(
+    primitive: Primitive,
+    bounds: Bounds,
+    mut quads: &mut Vec<Quad>,
+    mut text: &mut Vec<Text>,
+) {
+    match primitive {
+        Primitive::None => {}
+        Primitive::Quad { bounds, color } => {
+            quads.push(Quad {
+                position: [bounds.x, bounds.y],
+                color,
+                size: [bounds.width, bounds.height],
+            });
+        }
+        Primitive::Text {
+            content,
+            bounds,
+            size,
+        } => {
+            text.push(Text {
+                content,
+                bounds,
+                size,
+            });
+        }
+        Primitive::Group { primitives } => {
+            for primitive in primitives {
+                process_primitive(primitive, bounds, &mut quads, &mut text);
+            }
+        }
+    };
+}
+
+fn _old(primitive: Primitive, bounds: Bounds) -> Layer {
+    match primitive {
+        Primitive::Group { primitives } => {
+            let mut quads = Vec::new();
+            let mut text = Vec::new();
+            for primitive in primitives {
+                match primitive {
+                    Primitive::Quad { bounds, color } => {
+                        quads.push(Quad {
+                            position: [bounds.x, bounds.y],
+                            color,
+                            size: [bounds.width, bounds.height],
+                        });
+                    }
+                    Primitive::Text {
+                        content,
+                        bounds,
+                        size,
+                    } => text.push(Text {
+                        content: content.clone(),
+                        bounds,
+                        size,
+                    }),
+                    Primitive::Group { primitives } => {
+                        for primitive in primitives {
+                            process_primitive(primitive, bounds, &mut quads, &mut text);
+                        }
+                    }
+                    Primitive::None => {}
+                }
+            }
+            Layer {
+                quads,
+                text,
+                bounds,
+            }
+        }
+        _ => Layer {
+            quads: Vec::new(),
+            text: Vec::new(),
+            bounds,
+        },
     }
 }
 

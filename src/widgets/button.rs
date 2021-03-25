@@ -23,7 +23,6 @@ pub struct Button<'a, Message: Clone> {
     min_height: u32,
 }
 
-// TODO: do something with the label (like render it lol)
 impl<'a, Message: Clone> Button<'a, Message> {
     pub fn new(
         state: &'a mut State,

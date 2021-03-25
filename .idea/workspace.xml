@@ -24,22 +24,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation">
-      <change afterPath="$PROJECT_DIR$/src/events/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/events/mouse.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/events/window.rs" afterDir="false" />
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Finish implementation of first row widget">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application_state.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/application_state.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layout/limits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/limits.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layout/node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layout/flex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/flex.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/button.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/button.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/row.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/text.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/text.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/column.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/column.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +112,7 @@
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Test layout::limits::tests::test_max_width">
+  <component name="RunManager" selected="Cargo.Run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -164,6 +153,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
@@ -276,7 +270,8 @@
       <workItem from="1616597458433" duration="5387000" />
       <workItem from="1616602982298" duration="22000" />
       <workItem from="1616603053522" duration="2316000" />
-      <workItem from="1616605483229" duration="673000" />
+      <workItem from="1616605483229" duration="751000" />
+      <workItem from="1616673876582" duration="15942000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -376,7 +371,21 @@
       <option name="project" value="LOCAL" />
       <updated>1613606710919</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Implement own event system due to Winit's WindowEvents not being cloneable, and begin implementing row widget">
+      <created>1616606663654</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1616606663654</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Finish implementation of first row widget">
+      <created>1616692669273</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1616692669273</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -409,7 +418,20 @@
     <MESSAGE value="Add initial text pipeline &amp; layout work" />
     <MESSAGE value="Progress towards a layout system and the rendering of multiple widgets simultaneously" />
     <MESSAGE value="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rework viewport coordinate normalisation to use matrix maths on the GPU, add first fully working example of a button implementation" />
+    <MESSAGE value="Implement own event system due to Winit's WindowEvents not being cloneable, and begin implementing row widget" />
+    <MESSAGE value="Finish implementation of first row widget" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish implementation of first row widget" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/widgets/column.rs</url>
+          <line>104</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

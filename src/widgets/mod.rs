@@ -7,6 +7,7 @@ use crate::primitives::Primitive;
 use crate::viewport::Viewport;
 
 pub mod button;
+pub mod column;
 pub mod row;
 pub mod text;
 

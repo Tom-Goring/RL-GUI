@@ -5,6 +5,7 @@ pub mod quad;
 pub mod triangle;
 pub mod vertex;
 
+#[derive(Debug, Clone)]
 /// Holds rendering primitives
 pub enum Primitive {
     None,
