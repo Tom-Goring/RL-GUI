@@ -29,8 +29,8 @@ impl<'a, Message> Column<'a, Message> {
 
     pub fn with_children(children: Vec<Element<'a, Message>>) -> Self {
         Self {
-            width: Length::Fill,
-            height: Length::Fill,
+            width: Length::Shrink,
+            height: Length::Shrink,
             max_height: u32::MAX,
             max_width: u32::MAX,
             alignment: Alignment::Left,

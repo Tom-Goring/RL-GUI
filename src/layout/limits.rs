@@ -1,8 +1,6 @@
 use crate::core::length::Length;
 use crate::core::size::Size;
 
-// TODO: Add support for padding?
-
 /// Holds data on the minimum w/h, maximum w/h, and a size to fill up to
 #[derive(Copy, Clone, Debug)]
 pub struct Limits {

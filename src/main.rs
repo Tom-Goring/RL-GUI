@@ -117,7 +117,7 @@ impl Application for Test {
             .padding(10.0)
             .into();
 
-        Column::with_children(vec![button_row, row])
+        Column::with_children(vec![row, button_row])
             .padding(10.0)
             .into()
     }
