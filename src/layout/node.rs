@@ -1,5 +1,4 @@
 use crate::core::bounds::Bounds;
-use crate::core::point::Point;
 use crate::core::size::Size;
 
 // Holds data on the bounds of an element, along with all its children recursively
@@ -26,12 +25,16 @@ impl Node {
         }
     }
 
-    pub fn reposition(&mut self, point: Point) {
-        self.bounds.x = point.x;
-        self.bounds.y = point.y;
+    pub fn reposition(&mut self, x: Option<f32>, y: Option<f32>) {
+        if let Some(x) = x {
+            self.bounds.x = x;
+        }
+        if let Some(y) = y {
+            self.bounds.y = y;
+        }
 
         for child in &mut self.children {
-            child.reposition(point);
+            child.reposition(x, y);
         }
     }
 

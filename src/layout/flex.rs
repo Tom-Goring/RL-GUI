@@ -1,5 +1,4 @@
 use crate::compositor::Compositor;
-use crate::core::point::Point;
 use crate::core::size::Size;
 use crate::element::Element;
 use crate::layout::align::Alignment;
@@ -64,15 +63,17 @@ pub fn resolve<Message>(
             let first_node = window[0].clone();
             let mut second_node = window[1].clone();
 
+            // if we are flexing vertically, move each node vertically but maintain its x coord
+            // if we are flexing horizontally, move each node horizontally but maintain its y coord
             match axis {
-                Axis::Vertical => second_node.reposition(Point {
-                    x: first_node.bounds.x,
-                    y: first_node.bounds.y + first_node.bounds.height + padding,
-                }),
-                Axis::Horizontal => second_node.reposition(Point {
-                    x: first_node.bounds.x + first_node.bounds.width + padding,
-                    y: first_node.bounds.y,
-                }),
+                Axis::Vertical => second_node.reposition(
+                    None,
+                    Some(first_node.bounds.y + first_node.bounds.height + padding),
+                ),
+                Axis::Horizontal => second_node.reposition(
+                    Some(first_node.bounds.x + first_node.bounds.width + padding),
+                    None,
+                ),
             }
 
             new_nodes.push(first_node);

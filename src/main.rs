@@ -108,7 +108,9 @@ impl Application for Test {
             self.second_color.to_rgb(),
         );
 
-        let button_row = Row::with_children(vec![button.into(), second_button.into()]).into();
+        let button_row = Row::with_children(vec![button.into(), second_button.into()])
+            .padding(10.0)
+            .into();
 
         let text = Text::new("Lorem Ipsum", Some(30));
         let text2 = Text::new("Lorem Ipsum", Some(30));

@@ -24,13 +24,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Finish initial implementation of first row and column widgets">
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/layout/flex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/flex.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layout/limits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/limits.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layout/node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/column.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/column.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/row.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/row.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,7 +272,7 @@
       <workItem from="1616603053522" duration="2316000" />
       <workItem from="1616605483229" duration="751000" />
       <workItem from="1616673876582" duration="18770000" />
-      <workItem from="1616776854905" duration="2087000" />
+      <workItem from="1616776854905" duration="3251000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -395,7 +393,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616693674222</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height">
+      <created>1616779086017</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1616779086017</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -431,9 +436,19 @@
     <MESSAGE value="Implement own event system due to Winit's WindowEvents not being cloneable, and begin implementing row widget" />
     <MESSAGE value="Finish implementation of first row widget" />
     <MESSAGE value="Finish initial implementation of first row and column widgets" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish initial implementation of first row and column widgets" />
+    <MESSAGE value="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/layout/flex.rs</url>
+          <line>61</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="CargoCommandRunConfiguration">
         <watch expression="nodes" />
