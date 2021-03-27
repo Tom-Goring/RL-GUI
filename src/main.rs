@@ -10,6 +10,8 @@ use rl_gui::widgets::column::Column;
 use rl_gui::widgets::row::Row;
 use rl_gui::widgets::text::Text;
 
+use rl_macro::ui;
+
 fn main() {
     let event_loop = EventLoop::new();
     let window = winit::window::Window::new(&event_loop).unwrap();
@@ -88,39 +90,21 @@ impl Application for Test {
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        let text: String = match self.color {
-            Color::Red => "This is a button".into(),
-            Color::Green => "The button has been clicked".into(),
-            Color::Blue => "The button has been clicked twice".into(),
-        };
-
-        let button = Button::new(
-            &mut self.button,
-            Text::new(text, Some(30)).into(),
-            Some(TestMessage::FirstButtonClicked),
-            self.color.to_rgb(),
-        );
-
-        let second_button = Button::new(
-            &mut self.second_button,
-            Text::new("Second button", Some(30)).into(),
-            Some(TestMessage::SecondButtonClicked),
-            self.second_color.to_rgb(),
-        );
-
-        let button_row = Row::with_children(vec![button.into(), second_button.into()])
-            .padding(10.0)
-            .into();
-
-        let text = Text::new("Lorem Ipsum", Some(30));
-        let text2 = Text::new("Lorem Ipsum", Some(30));
-
-        let row = Row::with_children(vec![text.into(), text2.into()])
-            .padding(10.0)
-            .into();
-
-        Column::with_children(vec![row, button_row])
-            .padding(10.0)
-            .into()
+        ui!(
+        <Column padding=10.0>
+            <Row padding=10.0>
+                <Button state=self.button, color=self.color.to_rgb(), on_press=TestMessage::FirstButtonClicked>
+                    <Text value="First Button", size=30/>
+                </Button>
+                <Button state=self.second_button, color=self.second_color.to_rgb(),on_press=TestMessage::SecondButtonClicked>
+                    <Text value="Second Button", size=30/>
+                </Button>
+            </Row>
+            <Row padding=10.0>
+                <Text value="First Text", size=30/>
+                <Text value="Second Text", size=30/>
+            </Row>
+        </Column>
+        )
     }
 }

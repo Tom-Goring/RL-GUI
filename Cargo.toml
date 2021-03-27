@@ -20,6 +20,7 @@ wgpu_glyph = "0.10.0"
 glyph_brush = "0.7.2"
 glam = "0.12.0"
 itertools = "0.10.0"
+rl_macro = { path = "./rl-macro"}
 
 [build-dependencies]
 anyhow = "1.0"

@@ -5,7 +5,6 @@ pub mod widgets;
 mod application_state;
 mod compositor;
 mod core;
-mod dsl;
 mod events;
 mod layout;
 mod pipelines;

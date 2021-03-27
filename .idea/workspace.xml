@@ -24,13 +24,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning">
-      <change afterPath="$PROJECT_DIR$/src/dsl/lexer.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/dsl/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/dsl/parser.rs" afterDir="false" />
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Add parser using proc-macro for a html-like interface for the view (this is extremely janky but it seems to work)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,14 +86,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../procmacro/src/lib.rs" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="Push.Settings">
     <force-push-targets>
@@ -114,7 +109,7 @@
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Test dsl::parser::tests::parser_test">
+  <component name="RunManager" selected="Cargo.Run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -332,6 +327,14 @@
       <workItem from="1616841256636" duration="105000" />
       <workItem from="1616841370089" duration="9339000" />
       <workItem from="1616871738105" duration="7185000" />
+      <workItem from="1616920047663" duration="44000" />
+      <workItem from="1617007015915" duration="338000" />
+      <workItem from="1617007379307" duration="667000" />
+      <workItem from="1617008112393" duration="928000" />
+      <workItem from="1617015219694" duration="255000" />
+      <workItem from="1617015585051" duration="23000" />
+      <workItem from="1617015622031" duration="344000" />
+      <workItem from="1617016514720" duration="650000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -466,7 +469,21 @@
       <option name="project" value="LOCAL" />
       <updated>1616780220022</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Add parser using proc-macro for a html-like interface for the view (this is extremely janky but it seems to work)">
+      <created>1617016723560</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1617016723560</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Add parser using proc-macro for a html-like interface for the view (this is extremely janky but it seems to work)">
+      <created>1617017114191</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1617017114191</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -504,7 +521,8 @@
     <MESSAGE value="Finish initial implementation of first row and column widgets" />
     <MESSAGE value="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height" />
     <MESSAGE value="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning" />
+    <MESSAGE value="Add parser using proc-macro for a html-like interface for the view (this is extremely janky but it seems to work)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add parser using proc-macro for a html-like interface for the view (this is extremely janky but it seems to work)" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
