@@ -24,11 +24,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height">
+    <list default="true" id="c8c71c16-bfb6-4c2f-aa47-a18ad447fb5b" name="Default Changelist" comment="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning">
+      <change afterPath="$PROJECT_DIR$/src/dsl/lexer.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dsl/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dsl/parser.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layout/flex.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/flex.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layout/node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/node.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +91,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../iced" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -112,14 +114,51 @@
       <recent name="C:\Users\tomgo\CLionProjects\RL-GUI\src\pipelines" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Run">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.Test dsl::parser::tests::parser_test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test dsl::lexer::tests::lexer_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package rl_gui --lib dsl::lexer::tests::lexer_test -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test dsl::parser::tests::parser_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package rl_gui --lib dsl::parser::tests::parser_test -- --exact --nocapture" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test dsl::parser::tests::parser_text" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package rl_gui --lib dsl::parser::tests::parser_text -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -160,8 +199,24 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Run" />
+      <item itemvalue="Cargo.Test dsl::lexer::tests::lexer_test" />
+      <item itemvalue="Cargo.Test dsl::parser::tests::parser_test" />
+      <item itemvalue="Cargo.Test dsl::parser::tests::parser_text" />
+      <item itemvalue="Cargo.Test layout::limits::tests::test_max_width" />
+      <item itemvalue="Cargo.Test viewport::tests::normalise_coords" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test dsl::parser::tests::parser_test" />
+        <item itemvalue="Cargo.Test dsl::parser::tests::parser_text" />
+        <item itemvalue="Cargo.Test dsl::lexer::tests::lexer_test" />
         <item itemvalue="Cargo.Test layout::limits::tests::test_max_width" />
         <item itemvalue="Cargo.Test viewport::tests::normalise_coords" />
       </list>
@@ -272,7 +327,11 @@
       <workItem from="1616603053522" duration="2316000" />
       <workItem from="1616605483229" duration="751000" />
       <workItem from="1616673876582" duration="18770000" />
-      <workItem from="1616776854905" duration="3251000" />
+      <workItem from="1616776854905" duration="7224000" />
+      <workItem from="1616794024226" duration="542000" />
+      <workItem from="1616841256636" duration="105000" />
+      <workItem from="1616841370089" duration="9339000" />
+      <workItem from="1616871738105" duration="7185000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1601738700090</created>
@@ -400,7 +459,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616779086017</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning">
+      <created>1616780220022</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1616780220022</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -437,18 +503,10 @@
     <MESSAGE value="Finish implementation of first row widget" />
     <MESSAGE value="Finish initial implementation of first row and column widgets" />
     <MESSAGE value="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rewrite some of the flex code to fix empty and single node trees, fix default column &amp; row width and height" />
+    <MESSAGE value="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix over-excited node repositioning code to allow for optional recursive repositioning of x or y coords - multiple widgets with rows and columns now functioning" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/layout/flex.rs</url>
-          <line>61</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="CargoCommandRunConfiguration">
         <watch expression="nodes" />
