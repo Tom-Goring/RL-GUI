@@ -10,6 +10,7 @@ pub mod button;
 pub mod column;
 pub mod row;
 pub mod text;
+pub mod text_input;
 
 pub trait Widget<Message> {
     fn draw(&self, node: Node) -> Primitive;
