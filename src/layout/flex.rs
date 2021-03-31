@@ -18,7 +18,7 @@ pub fn resolve<Message>(
     mut renderer: &mut Compositor,
     padding: f32,
 ) -> Node {
-    let nodes: Vec<Node> = elements
+    let mut nodes: Vec<Node> = elements
         .iter()
         .map(|element| element.layout(&mut renderer, *limits))
         .collect();
@@ -57,32 +57,26 @@ pub fn resolve<Message>(
     if nodes.len() == 1 {
         new_nodes.push(nodes.first().unwrap().clone());
     } else {
-        let windows = nodes.windows(2);
+        let mut it = nodes.iter_mut();
+        let mut origin_node = it.next().unwrap().clone();
 
-        for window in windows {
-            let first_node = window[0].clone();
-            let mut second_node = window[1].clone();
-
-            // if we are flexing vertically, move each node vertically but maintain its x coord
-            // if we are flexing horizontally, move each node horizontally but maintain its y coord
+        for node in it {
             match axis {
-                Axis::Vertical => second_node.reposition(
+                Axis::Vertical => node.reposition(
                     None,
-                    Some(first_node.bounds.y + first_node.bounds.height + padding),
+                    Some(origin_node.bounds.y + origin_node.bounds.height + padding),
                 ),
-                Axis::Horizontal => second_node.reposition(
-                    Some(first_node.bounds.x + first_node.bounds.width + padding),
+                Axis::Horizontal => node.reposition(
+                    Some(origin_node.bounds.x + origin_node.bounds.width + padding),
                     None,
                 ),
             }
-
-            new_nodes.push(first_node);
-            new_nodes.push(second_node);
+            origin_node = node.clone();
         }
     }
 
     let required_size = Size::new(total_required_width, total_required_height);
     let size = limits.resolve(required_size);
 
-    Node::with_children(size, new_nodes)
+    Node::with_children(size, nodes)
 }
