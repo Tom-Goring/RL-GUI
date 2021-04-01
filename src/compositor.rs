@@ -222,7 +222,8 @@ impl Compositor {
                 return idx + 1;
             }
         }
-        panic!("Clicked width is outside of the text being measured")
+
+        value.len()
     }
 
     pub fn measure_cursor_position(&mut self, value: &str, index: usize, size: u16) -> f32 {

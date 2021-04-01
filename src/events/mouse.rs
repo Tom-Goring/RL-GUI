@@ -1,6 +1,6 @@
 use crate::core::point::Point;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum Event {
     CursorEnteredWindow,
     CursorLeftWindow,
@@ -9,7 +9,7 @@ pub enum Event {
     Released(Button),
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum Button {
     Left,
     Right,

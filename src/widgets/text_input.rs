@@ -4,6 +4,8 @@ use crate::core::bounds::Bounds;
 use crate::core::point::Point;
 use crate::core::size::Size;
 use crate::element::Element;
+use crate::events::keyboard;
+use crate::events::keyboard::KeyCode;
 use crate::events::{mouse, Event};
 use crate::layout::limits::Limits;
 use crate::layout::node::Node;
@@ -94,10 +96,10 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
                 bounds: Bounds {
                     x: bounds.x + self.state.cursor_position.unwrap(),
                     y: bounds.y,
-                    width: 1.0,
+                    width: 0.4,
                     height: bounds.height,
                 },
-                color: [0.0, 0.0, 0.0],
+                color: [0.3, 0.3, 0.3],
                 border_colour: [0.0, 0.0, 0.0],
                 border_width: 0.0,
             });
@@ -139,13 +141,72 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
                         self.state.cursor_index.unwrap(),
                         self.text_size,
                     ));
-                    println!("{:?}", self.state.cursor_position);
                 } else {
                     self.state.cursor_index = None;
                 }
             }
-            Event::CloseRequested => {
-                println!("Stop linting my shit");
+            Event::Keyboard(event) => {
+                if self.state.is_focused {
+                    match event {
+                        keyboard::Event::ReceivedCharacter(c) => {
+                            self.state.value.insert(self.state.cursor_index.unwrap(), c);
+                        }
+                        keyboard::Event::KeyPressed {
+                            key_code,
+                            shift,
+                            control,
+                            alt,
+                        } => match key_code {
+                            KeyCode::Left => {
+                                if let Some(cursor_index) = self.state.cursor_index {
+                                    if cursor_index != 0 {
+                                        self.state.cursor_index =
+                                            Some(self.state.cursor_index.unwrap() - 1);
+                                        self.state.cursor_position =
+                                            Some(compositor.measure_cursor_position(
+                                                &self.state.value,
+                                                self.state.cursor_index.unwrap(),
+                                                self.text_size,
+                                            ));
+                                    }
+                                }
+                            }
+                            KeyCode::Right => {
+                                if let Some(cursor_index) = self.state.cursor_index {
+                                    if cursor_index != self.state.value.len() {
+                                        self.state.cursor_index =
+                                            Some(self.state.cursor_index.unwrap() + 1);
+                                        self.state.cursor_position =
+                                            Some(compositor.measure_cursor_position(
+                                                &self.state.value,
+                                                self.state.cursor_index.unwrap(),
+                                                self.text_size,
+                                            ));
+                                    }
+                                }
+                            }
+                            KeyCode::Escape => {
+                                self.state.is_focused = false;
+                            }
+                            KeyCode::Backspace => {
+                                if let Some(cursor_index) = self.state.cursor_index {
+                                    if cursor_index != 0 && !self.state.value.is_empty() {
+                                        self.state.value.remove(cursor_index - 1);
+                                        self.state.cursor_index = Some(cursor_index - 1);
+                                        self.state.cursor_position =
+                                            Some(compositor.measure_cursor_position(
+                                                &self.state.value,
+                                                self.state.cursor_index.unwrap(),
+                                                self.text_size,
+                                            ));
+                                    }
+                                }
+                            }
+                            _ => {}
+                        },
+                        keyboard::Event::KeyReleased { .. } => {}
+                    }
+                }
             }
             _ => {}
         }
@@ -180,7 +241,6 @@ pub struct State {
     cursor_index: Option<usize>,
     cursor_position: Option<f32>,
     is_hovered: bool,
-    // something to hold Cursor position and selection?
 }
 
 impl State {
