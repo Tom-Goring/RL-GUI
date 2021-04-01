@@ -8,7 +8,7 @@ use crate::viewport::Viewport;
 use futures::task::SpawnExt;
 use glyph_brush::Section;
 use raw_window_handle::HasRawWindowHandle;
-use wgpu_glyph::Text;
+use unicode_segmentation::UnicodeSegmentation;
 
 /// Data structure to combine elements together and draw them.
 /// Will possibly take a renderer argument in the future for modularity
@@ -105,6 +105,8 @@ impl Compositor {
         primitives: Primitive,
         viewport: &Viewport,
     ) {
+        let scale_factor = viewport.scale_factor() as f32;
+
         let frame = swap_chain.get_current_frame().expect("Next frame");
 
         let mut encoder = self
@@ -142,23 +144,30 @@ impl Compositor {
                 &mut self.staging_belt,
                 &frame.output.view,
                 &layer.quads,
-                layer.bounds(),
+                layer.bounds() * scale_factor,
                 coord_translator,
+                scale_factor,
             )
         }
 
         if !layer.text.is_empty() {
             for text in layer.text.iter() {
                 let section = Section {
-                    screen_position: (text.bounds.x, text.bounds.y),
-                    bounds: (text.bounds.width, text.bounds.height),
+                    screen_position: (text.bounds.x * scale_factor, text.bounds.y * scale_factor),
+                    bounds: (
+                        text.bounds.width * scale_factor,
+                        text.bounds.height * scale_factor,
+                    ),
                     layout: Default::default(),
-                    text: vec![Text::new(&text.content).with_scale(
-                        wgpu_glyph::ab_glyph::PxScale {
-                            x: text.size,
-                            y: text.size,
+                    text: vec![wgpu_glyph::Text {
+                        text: &text.content,
+                        scale: wgpu_glyph::ab_glyph::PxScale {
+                            x: text.size * scale_factor,
+                            y: text.size * scale_factor,
                         },
-                    )],
+                        font_id: Default::default(),
+                        ..Default::default()
+                    }],
                 };
 
                 self.text_pipeline.queue(section);
@@ -190,5 +199,34 @@ impl Compositor {
 
     pub fn measure_text(&mut self, contents: &str, size: f32, bounds: Size) -> (f32, f32) {
         self.text_pipeline.measure(contents, size, bounds)
+    }
+
+    pub fn find_cursor_position(&mut self, value: &str, size: u16, target: f32) -> usize {
+        let graphemes: Vec<String> = UnicodeSegmentation::graphemes(value, true)
+            .map(String::from)
+            .collect();
+
+        if graphemes.is_empty() {
+            return 0;
+        }
+
+        let mut total: f32 = 0.0;
+        for (idx, grapheme) in graphemes.into_iter().enumerate() {
+            let width = self.measure_text(&grapheme, size as f32, Size::INFINITY).0;
+            total += width / 2.0;
+            if total > target {
+                return idx;
+            }
+            total += width / 2.0;
+            if total > target {
+                return idx + 1;
+            }
+        }
+        panic!("Clicked width is outside of the text being measured")
+    }
+
+    pub fn measure_cursor_position(&mut self, value: &str, index: usize, size: u16) -> f32 {
+        self.measure_text(&value[..index], size as f32, Size::INFINITY)
+            .0
     }
 }

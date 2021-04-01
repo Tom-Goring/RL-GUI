@@ -12,6 +12,8 @@ pub enum Primitive {
     Quad {
         bounds: Bounds,
         color: [f32; 3],
+        border_colour: [f32; 3],
+        border_width: f32,
     },
     Text {
         content: String,

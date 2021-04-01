@@ -19,8 +19,11 @@ pub struct Button<'a, Message: Clone> {
     height: Length,
     on_press: Option<Message>,
     color: [f32; 3],
+    border_width: f32,
     min_width: u32,
     min_height: u32,
+    hover_border_colour: [f32; 3],
+    normal_border_colour: [f32; 3],
 }
 
 impl<'a, Message: Clone> Button<'a, Message> {
@@ -39,6 +42,9 @@ impl<'a, Message: Clone> Button<'a, Message> {
             color,
             min_width: 0,
             min_height: 0,
+            normal_border_colour: [1.0, 1.0, 1.0], // TODO: add methods to change these
+            hover_border_colour: [0.0, 0.0, 0.0],
+            border_width: 1.0,
         }
     }
 }
@@ -49,6 +55,8 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
         let button = Primitive::Quad {
             bounds: node.bounds,
             color: self.color,
+            border_colour: self.state.current_border_color,
+            border_width: self.border_width,
         };
         Primitive::Group {
             primitives: vec![button, content],
@@ -62,8 +70,15 @@ impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
         _viewport: Viewport,
         messages: &mut Vec<Message>,
         layout: Node,
+        _compositor: &mut Compositor,
     ) {
         let bounds = layout.bounds;
+
+        if bounds.contains(cursor_position) {
+            self.state.current_border_color = self.hover_border_colour;
+        } else {
+            self.state.current_border_color = self.normal_border_colour;
+        }
 
         if let Event::Mouse(event) = event {
             match event {
@@ -116,6 +131,7 @@ where
 #[derive(Default, Clone)]
 pub struct State {
     is_pressed: bool,
+    current_border_color: [f32; 3],
 }
 
 impl State {

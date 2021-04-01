@@ -2,24 +2,29 @@ use crate::core::size::Size;
 
 use glam::Mat4;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Viewport {
     physical_size: Size<u32>,
     logical_size: Size<f32>,
+    scale_factor: f64,
     projection: Mat4,
 }
 
 impl Viewport {
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: u32, height: u32, scale_factor: f64) -> Self {
         Viewport {
             physical_size: Size { width, height },
-            // TODO: add support for scaling factor (so logical size isn't just the same as physical size)
             logical_size: Size {
-                width: width as f32,
-                height: height as f32,
+                width: (width as f64 / scale_factor) as f32,
+                height: (height as f64 / scale_factor) as f32,
             },
+            scale_factor,
             projection: Mat4::orthographic_rh_gl(0.0, width as f32, height as f32, 0.0, -1.0, 1.0),
         }
+    }
+
+    pub fn scale_factor(&self) -> f64 {
+        self.scale_factor
     }
 
     pub fn logical_size(&self) -> Size<f32> {

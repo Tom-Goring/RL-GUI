@@ -36,3 +36,16 @@ impl Bounds<f32> {
             && point.y < self.y + self.height
     }
 }
+
+impl std::ops::Mul<f32> for Bounds<f32> {
+    type Output = Self;
+
+    fn mul(self, scale: f32) -> Self {
+        Self {
+            x: self.x as f32 * scale,
+            y: self.y as f32 * scale,
+            width: self.width * scale,
+            height: self.height * scale,
+        }
+    }
+}

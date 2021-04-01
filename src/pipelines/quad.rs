@@ -188,8 +188,9 @@ impl Pipeline {
         instances: &[Quad],
         bounds: Bounds,
         translator: Mat4,
+        scale: f32,
     ) {
-        let uniforms = Uniforms::new(translator, 1.0);
+        let uniforms = Uniforms::new(translator, scale);
 
         // println!("{:?}", uniforms);
 

@@ -36,11 +36,18 @@ fn process_primitive(
 ) {
     match primitive {
         Primitive::None => {}
-        Primitive::Quad { bounds, color } => {
+        Primitive::Quad {
+            bounds,
+            color,
+            border_colour,
+            border_width,
+        } => {
             quads.push(Quad {
                 position: [bounds.x, bounds.y],
                 color,
                 size: [bounds.width, bounds.height],
+                border_colour,
+                border_width,
             });
         }
         Primitive::Text {
@@ -69,11 +76,18 @@ fn _old(primitive: Primitive, bounds: Bounds) -> Layer {
             let mut text = Vec::new();
             for primitive in primitives {
                 match primitive {
-                    Primitive::Quad { bounds, color } => {
+                    Primitive::Quad {
+                        bounds,
+                        color,
+                        border_colour,
+                        border_width,
+                    } => {
                         quads.push(Quad {
                             position: [bounds.x, bounds.y],
                             color,
                             size: [bounds.width, bounds.height],
+                            border_colour,
+                            border_width,
                         });
                     }
                     Primitive::Text {

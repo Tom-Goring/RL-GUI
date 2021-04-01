@@ -20,7 +20,7 @@ fn main() {
     let event_loop = EventLoop::new();
     let window = winit::window::Window::new(&event_loop).unwrap();
     window.set_title("Test GUI");
-    window.set_inner_size(LogicalSize::new(1000, 600));
+    window.set_inner_size(LogicalSize::new(1024, 768));
 
     // TODO: move the event loop and window creation inside of the run function
     run::<Test>(event_loop, window);
@@ -65,6 +65,7 @@ struct Test {
     color: Color,
     second_color: Color,
     text_input: text_input::State,
+    text: String,
 }
 
 impl Application for Test {
@@ -75,7 +76,9 @@ impl Application for Test {
         let second_button = button::State::new();
         let color = Color::Red;
         let second_color = Color::Blue;
-        let text_input = text_input::State::new();
+        let mut text_input = text_input::State::new();
+        text_input.value = String::from("Hello There");
+        let text = String::new();
 
         Self {
             button,
@@ -83,6 +86,7 @@ impl Application for Test {
             color,
             second_color,
             text_input,
+            text,
         }
     }
 
@@ -114,7 +118,7 @@ impl Application for Test {
         //     <Row padding=10.0>
         //         <Text value="First Text", size=30/>
         //         <Text value="Second Text", size=30/>
-        //         <TextInput placeholder="Enter text" size=30/>
+        //         // <TextInput placeholder="Enter text" size=30/>
         //     </Row>
         // </Column>
         // )
@@ -151,11 +155,12 @@ impl Application for Test {
                     TestMessage::TextInputChanged,
                 )
                 .into(),
-                Text::new("Third Text", Some(30)).into(),
+                Text::new(&self.text, Some(30)).into(),
             ])
             .padding(10.0)
             .into(),
         ])
+        .padding(10.0)
         .into()
     }
 }

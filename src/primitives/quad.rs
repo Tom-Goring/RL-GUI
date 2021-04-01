@@ -10,6 +10,8 @@ pub struct Quad {
     pub position: [f32; 2],
     pub color: [f32; 3],
     pub size: [f32; 2],
+    pub border_colour: [f32; 3],
+    pub border_width: f32,
 }
 
 impl Quad {
@@ -35,6 +37,18 @@ impl Quad {
                     offset: 4 * (3 + 2),
                     shader_location: 3,
                     format: wgpu::VertexFormat::Float2,
+                },
+                // Border Color
+                wgpu::VertexAttributeDescriptor {
+                    offset: 4 * (3 + 2 + 2),
+                    shader_location: 4,
+                    format: wgpu::VertexFormat::Float3,
+                },
+                // Border width
+                wgpu::VertexAttributeDescriptor {
+                    offset: 4 * (3 + 2 + 2 + 3),
+                    shader_location: 5,
+                    format: wgpu::VertexFormat::Float,
                 },
             ],
         }

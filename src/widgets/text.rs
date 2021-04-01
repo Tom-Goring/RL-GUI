@@ -44,6 +44,7 @@ impl<Message> Widget<Message> for Text {
         _viewport: Viewport,
         _messages: &mut Vec<Message>,
         _layout: Node,
+        _compositor: &mut Compositor,
     ) {
     }
 

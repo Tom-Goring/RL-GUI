@@ -85,13 +85,21 @@ impl<'a, Message> Widget<Message> for Column<'a, Message> {
         viewport: Viewport,
         messages: &mut Vec<Message>,
         layout: Node,
+        compositor: &mut Compositor,
     ) {
         let children = layout.children;
         self.children
             .iter_mut()
             .zip(children)
             .for_each(|(child, layout)| {
-                child.on_event(event, cursor_position, viewport, messages, layout)
+                child.on_event(
+                    event,
+                    cursor_position,
+                    viewport,
+                    messages,
+                    layout,
+                    compositor,
+                )
             });
     }
 

@@ -34,8 +34,15 @@ impl<'a, Message> Element<'a, Message> {
         viewport: Viewport,
         messages: &mut Vec<Message>,
         layout: Node,
+        compositor: &mut Compositor,
     ) {
-        self.content
-            .on_event(event, cursor_position, viewport, messages, layout);
+        self.content.on_event(
+            event,
+            cursor_position,
+            viewport,
+            messages,
+            layout,
+            compositor,
+        );
     }
 }

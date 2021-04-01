@@ -19,7 +19,7 @@ impl ApplicationState {
         }
     }
 
-    pub fn update(&mut self, event: crate::events::Event) {
+    pub fn update(&mut self, event: crate::events::Event, window: &winit::window::Window) {
         match event {
             Event::Mouse(mouse_event) => match mouse_event {
                 mouse::Event::CursorMoved(position) => {
@@ -29,7 +29,8 @@ impl ApplicationState {
             },
             Event::Window(window_event) => match window_event {
                 window::Event::Resized { width, height } => {
-                    self.viewport = Viewport::new(width, height)
+                    // println!("new window size: {}x{}", width, height);
+                    self.viewport = Viewport::new(width, height, window.scale_factor())
                 }
             },
             _ => {}

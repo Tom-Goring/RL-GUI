@@ -7,6 +7,7 @@ use winit::window::Window;
 use crate::application_state::ApplicationState;
 use crate::core::size::Size;
 use crate::element::Element;
+use crate::events::convert_event;
 use crate::layout::limits::Limits;
 use crate::viewport::Viewport;
 
@@ -31,8 +32,13 @@ pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
 // Add compositor as type argument to allow for use of standardised rendering in app.render()
 pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
     let mut compositor = block_on(super::compositor::Compositor::new());
-    let viewport = Viewport::new(window.inner_size().width, window.inner_size().height);
+    let viewport = Viewport::new(
+        window.inner_size().width,
+        window.inner_size().height,
+        window.scale_factor(),
+    );
     let surface = compositor.create_surface(&window);
+    // window.set_resizable(false);
 
     let mut state = ApplicationState::new(viewport);
 
@@ -48,8 +54,8 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                 if should_exit(&event) {
                     *control_flow = ControlFlow::Exit;
                 }
-                let event = crate::events::Event::from(&event);
-                state.update(event);
+                let event = convert_event(&event, window.scale_factor());
+                state.update(event, &window);
                 {
                     let mut ui = app.view();
                     let layout = ui.layout(
@@ -62,6 +68,7 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                         state.viewport,
                         &mut messages,
                         layout,
+                        &mut compositor,
                     );
                 }
                 for message in messages.drain(..) {
@@ -88,7 +95,7 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                     Limits::new(Size::ZERO, state.logical_size()),
                 );
                 let primitives = ui.draw(layout);
-                compositor.draw(&mut swap_chain, primitives, &viewport);
+                compositor.draw(&mut swap_chain, primitives, &state.viewport);
             }
             Event::RedrawEventsCleared => {}
             Event::LoopDestroyed => {}

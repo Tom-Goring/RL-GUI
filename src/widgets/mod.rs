@@ -21,6 +21,7 @@ pub trait Widget<Message> {
         viewport: Viewport,
         messages: &mut Vec<Message>,
         layout: Node,
+        compositor: &mut Compositor,
     );
     fn layout(&self, renderer: &mut Compositor, limits: Limits) -> Node;
 }

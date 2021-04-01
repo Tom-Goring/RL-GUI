@@ -1,30 +1,44 @@
 #version 450
 
-layout(location=0) in vec2 a_position;
-layout(location=1) in vec2 i_pos;
-layout(location=2) in vec3 i_color;
-layout(location=3) in vec2 i_size;
+// for each instance, we go through each vertex of the original vertices and calculate the instance's vertices
+
+layout(location=0) in vec2 original_vertex; // origin square
+layout(location=1) in vec2 instance_vertex; // position to move origin square to
+layout(location=2) in vec3 instance_colour; // color to make origin square - passed to frag shader
+layout(location=3) in vec2 instance_size; // size to scale origin square to
+layout(location=4) in vec3 instance_border_colour; // color to make border - passed to frag shader
+layout(location=5) in float instance_border_width;
 
 layout (set = 0, binding = 0) uniform Globals {
     mat4 u_coord_translator;
     float u_scale;
 };
 
-layout(location=1) out vec4 v_color;
+layout(location=0) out vec4 output_color;
+layout(location=1) out vec2 output_position;
+layout(location=2) out vec2 output_size;
+layout(location=3) out vec3 output_border_colour;
+layout(location=4) out float output_border_width;
 
 void main() {
-    vec2 p_pos = i_pos * u_scale;
-    vec2 p_scale = i_size * u_scale;
+    vec2 scaled_position = instance_vertex * u_scale;
+    vec2 scaled_size = instance_size * u_scale;
 
     mat4 transform = mat4(
-        vec4(p_scale.x + 1.0, 0.0, 0.0, 0.0),
-        vec4(0.0, p_scale.y + 1.0, 0.0, 0.0),
+        vec4(scaled_size.x + 1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, scaled_size.y + 1.0, 0.0, 0.0),
         vec4(0.0, 0.0, 1.0, 0.0),
-        vec4(p_pos - vec2(0.5, 0.5), 0.0, 1.0)
+        vec4(scaled_position - vec2(0.5, 0.5), 0.0, 1.0)
     );
 
-    v_color = vec4(i_color, 1.0);
-//    vec4 tmp = transform * vec4(a_position.x, a_position.y, 0.0, 1.0);
-//    gl_Position = vec4(tmp.x + i_pos.x * u_scale, tmp.y + i_pos.y, 0.0, 1.0);
-    gl_Position = u_coord_translator * transform * vec4(a_position, 0.0, 1.0);
+    output_color = vec4(instance_colour, 1.0);
+    output_position = scaled_position;
+    output_size = scaled_size;
+    output_border_colour = instance_border_colour;
+    output_border_width = instance_border_width;
+
+    // rounded borders in the future? border radius?
+
+    vec4 vertex_position = u_coord_translator * transform * vec4(original_vertex, 0.0, 1.0);
+    gl_Position = vertex_position;
 }

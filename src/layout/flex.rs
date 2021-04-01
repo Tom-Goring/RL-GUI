@@ -51,13 +51,24 @@ pub fn resolve<Message>(
         panic!("Tried to flex-resolve an empty node tree");
     }
 
-    let mut new_nodes = Vec::new();
-
     // only try to resolve nodes if we have multiple, else just use the single node
     if nodes.len() == 1 {
-        new_nodes.push(nodes.first().unwrap().clone());
     } else {
         let mut it = nodes.iter_mut();
+        // let mut origin_node = match axis {
+        //     Axis::Vertical => {
+        //         let mut node = it.next().unwrap();
+        //         node.bounds.y += padding;
+        //         node
+        //     }
+        //     Axis::Horizontal => {
+        //         let mut node = it.next().unwrap();
+        //         node.bounds.x += padding;
+        //         node
+        //     }
+        // }
+        // .clone();
+
         let mut origin_node = it.next().unwrap().clone();
 
         for node in it {
