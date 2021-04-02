@@ -4,6 +4,8 @@ A GUI written in Rust for my Digital Systems Project module at university. It us
 has support for some extremely basic widgets currently. It is intended to have an embedded scripting language such as Lua
 for easy editing but that is currently under investigation.
 
+![two buttons, two text areas, a text input and a text area copying the current value of the text input](./images/current_functionality.png)
+
 ## Current State
 
 - Basic buttons implemented
