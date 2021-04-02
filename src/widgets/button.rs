@@ -50,8 +50,8 @@ impl<'a, Message: Clone> Button<'a, Message> {
 }
 
 impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
-    fn draw(&self, node: Node) -> Primitive {
-        let content = self.content.draw(node.clone());
+    fn draw(&self, node: Node, compositor: &mut Compositor) -> Primitive {
+        let content = self.content.draw(node.clone(), compositor);
         let button = Primitive::Quad {
             bounds: node.bounds,
             color: self.color,

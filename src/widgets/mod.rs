@@ -13,7 +13,7 @@ pub mod text;
 pub mod text_input;
 
 pub trait Widget<Message> {
-    fn draw(&self, node: Node) -> Primitive;
+    fn draw(&self, node: Node, compositor: &mut Compositor) -> Primitive;
     fn on_event(
         &mut self,
         event: Event,

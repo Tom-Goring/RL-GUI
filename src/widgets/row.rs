@@ -57,13 +57,13 @@ impl<'a, Message> Default for Row<'a, Message> {
 }
 
 impl<'a, Message> Widget<Message> for Row<'a, Message> {
-    fn draw(&self, node: Node) -> Primitive {
+    fn draw(&self, node: Node, compositor: &mut Compositor) -> Primitive {
         Primitive::Group {
             primitives: self
                 .children
                 .iter()
                 .zip(node.children)
-                .map(|(child, layout)| child.draw(layout))
+                .map(|(child, layout)| child.draw(layout, compositor))
                 .collect(),
         }
     }

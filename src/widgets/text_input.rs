@@ -1,4 +1,8 @@
 #![allow(dead_code, unused_variables)]
+
+mod cursor;
+mod value;
+
 use crate::compositor::Compositor;
 use crate::core::bounds::Bounds;
 use crate::core::point::Point;
@@ -11,18 +15,24 @@ use crate::layout::limits::Limits;
 use crate::layout::node::Node;
 use crate::primitives::Primitive;
 use crate::viewport::Viewport;
+use crate::widgets::text_input::cursor::Cursor;
+use crate::widgets::text_input::value::TextValue;
 use crate::widgets::Widget;
 use crate::Length;
 
 pub struct TextInput<'a, Message> {
     state: &'a mut State,
+    value: TextValue,
     placeholder: String,
+
     width: Length,
     height: Length,
-    text_size: u16,
+
     max_width: u32,
+    text_size: u16,
     padding: u16,
     on_change: Box<dyn Fn(String) -> Message>,
+
     background_colour: [f32; 3],
     border_colour: [f32; 3],
     border_width: f32,
@@ -32,19 +42,24 @@ impl<'a, Message> TextInput<'a, Message>
 where
     Message: Clone,
 {
-    pub fn new<F>(state: &'a mut State, placeholder: &str, on_change: F) -> Self
+    pub fn new<F>(state: &'a mut State, placeholder: &str, value: &str, on_change: F) -> Self
     where
         F: 'static + Fn(String) -> Message,
     {
         TextInput {
             state,
+            value: TextValue::new(value),
             placeholder: String::from(placeholder),
+
             width: Length::Fill,
             height: Length::Fill,
-            text_size: 30,
             max_width: u32::MAX,
+
+            text_size: 30,
             padding: 0,
+
             on_change: Box::new(on_change),
+
             background_colour: [1.0, 1.0, 1.0],
             border_colour: [0.5, 0.5, 0.5],
             border_width: 1.0,
@@ -56,12 +71,12 @@ where
 }
 
 impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
-    fn draw(&self, node: Node) -> Primitive {
+    fn draw(&self, node: Node, compositor: &mut Compositor) -> Primitive {
         let mut primitives = Vec::new();
-        let text = if self.state.is_focused || !self.state.value.is_empty() {
-            self.state.value.as_str()
+        let text = if self.state.is_focused || !self.value.is_empty() {
+            self.value.to_string()
         } else {
-            self.placeholder.as_str()
+            self.placeholder.clone()
         };
 
         let bounds = Bounds {
@@ -72,7 +87,7 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
         };
 
         primitives.push(Primitive::Text {
-            content: text.into(),
+            content: text.clone(),
             bounds,
             size: self.text_size as f32,
         });
@@ -90,11 +105,13 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
             border_width: self.border_width,
         });
 
+        // cursor primitive
         if self.state.is_focused {
-            // cursor primitive
+            let offset =
+                compositor.measure_cursor_position(&text, self.state.cursor.index, self.text_size);
             primitives.push(Primitive::Quad {
                 bounds: Bounds {
-                    x: bounds.x + self.state.cursor_position.unwrap(),
+                    x: bounds.x + offset,
                     y: bounds.y,
                     width: 0.4,
                     height: bounds.height,
@@ -133,78 +150,41 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
                 if is_clicked {
                     let text_layout = &layout.children[0];
                     let target = cursor_position.x - text_layout.bounds.x;
-                    let cursor_index =
-                        compositor.find_cursor_position(&self.state.value, self.text_size, target);
-                    self.state.cursor_index = Some(cursor_index);
-                    self.state.cursor_position = Some(compositor.measure_cursor_position(
-                        &self.state.value,
-                        self.state.cursor_index.unwrap(),
+                    let cursor_index = compositor.find_cursor_position(
+                        &self.value.to_string(),
                         self.text_size,
-                    ));
-                } else {
-                    self.state.cursor_index = None;
+                        target,
+                    );
+                    self.state.cursor.index = cursor_index;
                 }
             }
-            Event::Keyboard(event) => {
+            Event::Keyboard(keyboard::Event::ReceivedCharacter(c)) => {
+                if !c.is_control() {
+                    self.value.insert(self.state.cursor.index, c);
+                    self.state.cursor.move_right(&self.value);
+                    messages.push((self.on_change)(self.value.to_string()));
+                }
+            }
+            Event::Keyboard(keyboard::Event::KeyPressed { key_code, .. }) => {
                 if self.state.is_focused {
-                    match event {
-                        keyboard::Event::ReceivedCharacter(c) => {
-                            self.state.value.insert(self.state.cursor_index.unwrap(), c);
+                    match key_code {
+                        KeyCode::Left => {
+                            self.state.cursor.move_left();
                         }
-                        keyboard::Event::KeyPressed {
-                            key_code,
-                            shift,
-                            control,
-                            alt,
-                        } => match key_code {
-                            KeyCode::Left => {
-                                if let Some(cursor_index) = self.state.cursor_index {
-                                    if cursor_index != 0 {
-                                        self.state.cursor_index =
-                                            Some(self.state.cursor_index.unwrap() - 1);
-                                        self.state.cursor_position =
-                                            Some(compositor.measure_cursor_position(
-                                                &self.state.value,
-                                                self.state.cursor_index.unwrap(),
-                                                self.text_size,
-                                            ));
-                                    }
-                                }
+                        KeyCode::Right => {
+                            self.state.cursor.move_right(&self.value);
+                        }
+                        KeyCode::Escape => {
+                            self.state.is_focused = false;
+                        }
+                        KeyCode::Backspace => {
+                            if self.state.cursor.index != 0 {
+                                self.value.remove(self.state.cursor.index - 1);
+                                self.state.cursor.move_left();
+                                messages.push((self.on_change)(self.value.to_string()))
                             }
-                            KeyCode::Right => {
-                                if let Some(cursor_index) = self.state.cursor_index {
-                                    if cursor_index != self.state.value.len() {
-                                        self.state.cursor_index =
-                                            Some(self.state.cursor_index.unwrap() + 1);
-                                        self.state.cursor_position =
-                                            Some(compositor.measure_cursor_position(
-                                                &self.state.value,
-                                                self.state.cursor_index.unwrap(),
-                                                self.text_size,
-                                            ));
-                                    }
-                                }
-                            }
-                            KeyCode::Escape => {
-                                self.state.is_focused = false;
-                            }
-                            KeyCode::Backspace => {
-                                if let Some(cursor_index) = self.state.cursor_index {
-                                    if cursor_index != 0 && !self.state.value.is_empty() {
-                                        self.state.value.remove(cursor_index - 1);
-                                        self.state.cursor_index = Some(cursor_index - 1);
-                                        self.state.cursor_position =
-                                            Some(compositor.measure_cursor_position(
-                                                &self.state.value,
-                                                self.state.cursor_index.unwrap(),
-                                                self.text_size,
-                                            ));
-                                    }
-                                }
-                            }
-                            _ => {}
-                        },
-                        keyboard::Event::KeyReleased { .. } => {}
+                        }
+                        _ => {}
                     }
                 }
             }
@@ -213,10 +193,10 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
     }
 
     fn layout(&self, renderer: &mut Compositor, limits: Limits) -> Node {
-        let text = if self.state.value.is_empty() && !self.state.is_focused {
-            self.placeholder.as_str()
+        let text = if self.value.is_empty() && !self.state.is_focused {
+            self.placeholder.clone()
         } else {
-            self.state.value.as_str()
+            self.value.to_string()
         };
 
         let limits = limits.width(self.width).height(self.height);
@@ -237,10 +217,8 @@ impl<'a, Message: Clone> Widget<Message> for TextInput<'a, Message> {
 #[derive(Default, Clone)]
 pub struct State {
     is_focused: bool,
-    pub value: String,
-    cursor_index: Option<usize>,
-    cursor_position: Option<f32>,
     is_hovered: bool,
+    cursor: Cursor,
 }
 
 impl State {

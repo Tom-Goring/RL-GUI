@@ -19,8 +19,8 @@ impl<'a, Message> Element<'a, Message> {
         }
     }
 
-    pub fn draw(&self, node: Node) -> Primitive {
-        self.content.draw(node)
+    pub fn draw(&self, node: Node, compositor: &mut Compositor) -> Primitive {
+        self.content.draw(node, compositor)
     }
 
     pub fn layout(&self, compositor: &mut Compositor, limits: Limits) -> Node {

@@ -76,8 +76,7 @@ impl Application for Test {
         let second_button = button::State::new();
         let color = Color::Red;
         let second_color = Color::Blue;
-        let mut text_input = text_input::State::new();
-        text_input.value = String::from("Hello There");
+        let text_input = text_input::State::new();
         let text = String::new();
 
         Self {
@@ -99,7 +98,8 @@ impl Application for Test {
                 self.second_color = self.second_color.next();
             }
             TestMessage::TextInputChanged(new_string) => {
-                println!("Text Input Changed to {}", new_string)
+                println!("Changing string to {}", new_string);
+                self.text = new_string;
             }
         }
     }
@@ -152,6 +152,7 @@ impl Application for Test {
                 TextInput::new(
                     &mut self.text_input,
                     "Placeholder",
+                    &self.text,
                     TestMessage::TextInputChanged,
                 )
                 .into(),

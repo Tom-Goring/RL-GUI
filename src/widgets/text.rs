@@ -29,7 +29,7 @@ impl Text {
 }
 
 impl<Message> Widget<Message> for Text {
-    fn draw(&self, node: Node) -> Primitive {
+    fn draw(&self, node: Node, _compositor: &mut Compositor) -> Primitive {
         Primitive::Text {
             content: self.content.clone(),
             bounds: node.bounds,

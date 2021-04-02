@@ -227,7 +227,7 @@ impl Compositor {
     }
 
     pub fn measure_cursor_position(&mut self, value: &str, index: usize, size: u16) -> f32 {
-        self.measure_text(&value[..index], size as f32, Size::INFINITY)
+        self.measure_text(&value[..index.max(0)], size as f32, Size::INFINITY)
             .0
     }
 }

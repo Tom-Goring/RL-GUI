@@ -94,7 +94,7 @@ pub fn run_async<A: Application>(event_loop: EventLoop<()>, window: Window) {
                     &mut compositor,
                     Limits::new(Size::ZERO, state.logical_size()),
                 );
-                let primitives = ui.draw(layout);
+                let primitives = ui.draw(layout, &mut compositor);
                 compositor.draw(&mut swap_chain, primitives, &state.viewport);
             }
             Event::RedrawEventsCleared => {}
