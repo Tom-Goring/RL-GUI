@@ -71,9 +71,10 @@ fn process_node(node: &ParseNode) -> String {
             )
         }
         "TextInput" => format!(
-            "TextInput::new(&mut {}, {}, {}).into()",
+            "TextInput::new(&mut {}, {}, {}, {}).into()",
             values.get("state").expect("No state found for text input"),
             values.get("placeholder").unwrap_or(&String::from("")),
+            values.get("value").unwrap_or(&String::from("")),
             values
                 .get("on_change")
                 .expect("No on_change found for text input")

@@ -105,63 +105,66 @@ impl Application for Test {
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        // ui!(
-        // <Column padding=10.0>
-        //     <Row padding=10.0>
-        //         <Button state=self.button, color=self.color.to_rgb(), on_press=TestMessage::FirstButtonClicked>
-        //             <Text value="First Button", size=30/>
-        //         </Button>
-        //         <Button state=self.second_button, color=self.second_color.to_rgb(),on_press=TestMessage::SecondButtonClicked>
-        //             <Text value="Second Button", size=30/>
-        //         </Button>
-        //     </Row>
-        //     <Row padding=10.0>
-        //         <Text value="First Text", size=30/>
-        //         <Text value="Second Text", size=30/>
-        //         // <TextInput placeholder="Enter text" size=30/>
-        //     </Row>
-        // </Column>
-        // )
+        ui!(
+        <Column padding=10.0>
+            <Row padding=10.0>
+                <Button state=self.button, color=self.color.to_rgb(), on_press=TestMessage::FirstButtonClicked>
+                    <Text value="First Button", size=30/>
+                </Button>
+                <Button state=self.second_button, color=self.second_color.to_rgb(), on_press=TestMessage::SecondButtonClicked>
+                    <Text value="Second Button", size=30/>
+                </Button>
+            </Row>
+            <Row padding=10.0>
+                <Text value="First Text", size=30/>
+                <Text value="Second Text", size=30/>
+            </Row>
+            <Row padding=10.0>
+                <TextInput state=self.text_input, placeholder="Enter text", value=&self.text, size=30, on_change=TestMessage::TextInputChanged/>
+                <Text value=&self.text, size=30/>
+            </Row>
+        </Column>
+        )
 
-        Column::with_children(vec![
-            Row::with_children(vec![
-                Button::new(
-                    &mut self.button,
-                    Text::new("First Button", Some(30)).into(),
-                    Some(TestMessage::FirstButtonClicked),
-                    self.color.to_rgb(),
-                )
-                .into(),
-                Button::new(
-                    &mut self.second_button,
-                    Text::new("Second Button", Some(30)).into(),
-                    Some(TestMessage::SecondButtonClicked),
-                    self.second_color.to_rgb(),
-                )
-                .into(),
-            ])
-            .padding(10.0)
-            .into(),
-            Row::with_children(vec![
-                Text::new("First Text", Some(30)).into(),
-                Text::new("Second Text", Some(30)).into(),
-            ])
-            .padding(10.0)
-            .into(),
-            Row::with_children(vec![
-                TextInput::new(
-                    &mut self.text_input,
-                    "Placeholder",
-                    &self.text,
-                    TestMessage::TextInputChanged,
-                )
-                .into(),
-                Text::new(&self.text, Some(30)).into(),
-            ])
-            .padding(10.0)
-            .into(),
-        ])
-        .padding(10.0)
-        .into()
+        //     Column::with_children(vec![
+        //         Row::with_children(vec![
+        //             Button::new(
+        //                 &mut self.button,
+        //                 Text::new("First Button", Some(30)).into(),
+        //                 Some(TestMessage::FirstButtonClicked),
+        //                 self.color.to_rgb(),
+        //             )
+        //             .into(),
+        //             Button::new(
+        //                 &mut self.second_button,
+        //                 Text::new("Second Button", Some(30)).into(),
+        //                 Some(TestMessage::SecondButtonClicked),
+        //                 self.second_color.to_rgb(),
+        //             )
+        //             .into(),
+        //         ])
+        //         .padding(10.0)
+        //         .into(),
+        //         Row::with_children(vec![
+        //             Text::new("First Text", Some(30)).into(),
+        //             Text::new("Second Text", Some(30)).into(),
+        //         ])
+        //         .padding(10.0)
+        //         .into(),
+        //         Row::with_children(vec![
+        //             TextInput::new(
+        //                 &mut self.text_input,
+        //                 "Placeholder",
+        //                 &self.text,
+        //                 TestMessage::TextInputChanged,
+        //             )
+        //             .into(),
+        //             Text::new(&self.text, Some(30)).into(),
+        //         ])
+        //         .padding(10.0)
+        //         .into(),
+        //     ])
+        //     .padding(10.0)
+        //     .into()
     }
 }

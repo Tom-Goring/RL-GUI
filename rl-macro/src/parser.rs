@@ -2,7 +2,7 @@
 use proc_macro::{Delimiter, TokenTree};
 use std::collections::HashMap;
 
-// This is for easy toggling of the hundreds of debug prints in the parser.
+This is for easy toggling of the hundreds of debug prints in the parser.
 macro_rules! println {
     ($($rest:tt)*) => {
         #[cfg(not(debug_assertions))]
@@ -16,6 +16,7 @@ pub enum ParseItem {
     Text,
     Row,
     Column,
+    TextInput,
 }
 
 impl From<TokenTree> for ParseItem {
@@ -26,7 +27,8 @@ impl From<TokenTree> for ParseItem {
                 "Text" => ParseItem::Text,
                 "Row" => ParseItem::Row,
                 "Column" => ParseItem::Column,
-                _ => unimplemented!(),
+                "TextInput" => ParseItem::TextInput,
+                _ => panic!("Encountered unknown token: {}, aborting", name),
             },
             _ => unimplemented!(),
         }
@@ -40,9 +42,8 @@ impl From<&str> for ParseItem {
             "Text" => ParseItem::Text,
             "Row" => ParseItem::Row,
             "Column" => ParseItem::Column,
-            _ => {
-                unimplemented!()
-            }
+            "TextInput" => ParseItem::TextInput,
+            _ => panic!("Encountered unknown token: {}, aborting", input),
         }
     }
 }
@@ -54,6 +55,7 @@ impl ToString for ParseItem {
             ParseItem::Text => "Text".into(),
             ParseItem::Row => "Row".into(),
             ParseItem::Column => "Column".into(),
+            ParseItem::TextInput => "TextInput".into(),
         }
     }
 }
