@@ -1,170 +1,156 @@
 #![allow(dead_code, unused_imports)]
 
-use rl_gui::application::Application;
-use winit::dpi::LogicalSize;
-use winit::event_loop::EventLoop;
-
 use rl_gui::application::run;
+use rl_gui::application::Application;
 use rl_gui::element::Element;
 use rl_gui::widgets::button;
-use rl_gui::widgets::button::Button;
-use rl_gui::widgets::column::Column;
 use rl_gui::widgets::row::Row;
-use rl_gui::widgets::text::Text;
-use rl_gui::widgets::text_input;
-
-use rl_gui::widgets::text_input::TextInput;
 use rl_macro::ui;
 
+use rl_gui::widgets::button::Button;
+use rl_gui::widgets::column::Column;
+use rl_gui::widgets::text::Text;
+
 fn main() {
-    let event_loop = EventLoop::new();
-    let window = winit::window::Window::new(&event_loop).unwrap();
-    window.set_title("Test GUI");
-    window.set_inner_size(LogicalSize::new(1024, 768));
+    run::<Calculator>("Calculator Example", (350, 500));
+}
 
-    // TODO: move the event loop and window creation inside of the run function
-    run::<Test>(event_loop, window);
+const BUTTON_BACKGROUND: [f32; 3] = [0.8, 0.8, 0.8];
+
+#[derive(Clone)]
+enum Message {
+    NumberClicked(u8),
+    AddClicked,
+    SubtractClicked,
+    MultiplyClicked,
+    DivideClicked,
+    EqualsClicked,
+    ClearClicked,
 }
 
 #[derive(Clone)]
-enum Color {
-    Red,
-    Blue,
-    Green,
+struct Calculator {
+    current_display: String,
+
+    button_1: button::State,
+    button_2: button::State,
+    button_3: button::State,
+    button_4: button::State,
+    button_5: button::State,
+    button_6: button::State,
+    button_7: button::State,
+    button_8: button::State,
+    button_9: button::State,
+    button_0: button::State,
+
+    clear_button: button::State,
+    add_button: button::State,
+    subtract_button: button::State,
+    divide_button: button::State,
+    multiply_button: button::State,
+    equals_button: button::State,
+
+    number_just_entered: bool,
+    symbol_just_entered: bool,
 }
 
-impl Color {
-    pub fn to_rgb(&self) -> [f32; 3] {
-        match self {
-            Color::Red => [1.0, 0.0, 0.0],
-            Color::Green => [0.0, 1.0, 0.0],
-            Color::Blue => [0.0, 0.0, 1.0],
-        }
-    }
-
-    pub fn next(&self) -> Self {
-        match self {
-            Color::Red => Color::Green,
-            Color::Green => Color::Blue,
-            Color::Blue => Color::Red,
-        }
-    }
-}
-
-#[derive(Clone)]
-enum TestMessage {
-    FirstButtonClicked,
-    SecondButtonClicked,
-    TextInputChanged(String),
-}
-
-#[derive(Clone)]
-struct Test {
-    button: button::State,
-    second_button: button::State,
-    color: Color,
-    second_color: Color,
-    text_input: text_input::State,
-    text: String,
-}
-
-impl Application for Test {
-    type Message = TestMessage;
+impl Application for Calculator {
+    type Message = Message;
 
     fn init() -> Self {
-        let button = button::State::new();
-        let second_button = button::State::new();
-        let color = Color::Red;
-        let second_color = Color::Blue;
-        let text_input = text_input::State::new();
-        let text = String::new();
-
         Self {
-            button,
-            second_button,
-            color,
-            second_color,
-            text_input,
-            text,
+            current_display: String::new(),
+
+            button_1: button::State::new(),
+            button_2: button::State::new(),
+            button_3: button::State::new(),
+            button_4: button::State::new(),
+            button_5: button::State::new(),
+            button_6: button::State::new(),
+            button_7: button::State::new(),
+            button_8: button::State::new(),
+            button_9: button::State::new(),
+            button_0: button::State::new(),
+
+            clear_button: button::State::new(),
+            add_button: button::State::new(),
+            subtract_button: button::State::new(),
+            divide_button: button::State::new(),
+            multiply_button: button::State::new(),
+            equals_button: button::State::new(),
+
+            number_just_entered: false,
+            symbol_just_entered: false,
         }
     }
 
     fn update(&mut self, message: Self::Message) {
         match message {
-            TestMessage::FirstButtonClicked => {
-                self.color = self.color.next();
+            Message::NumberClicked(n) => {
+                self.symbol_just_entered = false;
+                self.current_display.push_str(&n.to_string());
             }
-            TestMessage::SecondButtonClicked => {
-                self.second_color = self.second_color.next();
+            Message::AddClicked => {
+                if !self.symbol_just_entered {
+                    self.current_display.push('+');
+                }
             }
-            TestMessage::TextInputChanged(new_string) => {
-                println!("Changing string to {}", new_string);
-                self.text = new_string;
+            Message::SubtractClicked => {
+                if !self.symbol_just_entered {
+                    self.current_display.push('-');
+                }
+            }
+            Message::MultiplyClicked => {
+                if !self.symbol_just_entered {
+                    self.current_display.push('*');
+                }
+            }
+            Message::DivideClicked => {
+                if !self.symbol_just_entered {
+                    self.current_display.push('/');
+                }
+            }
+            Message::EqualsClicked => {
+                let result = meval::eval_str(&self.current_display).unwrap();
+                self.current_display = result.to_string();
+            }
+            Message::ClearClicked => {
+                self.current_display = String::new();
             }
         }
     }
 
     fn view(&mut self) -> Element<Self::Message> {
         ui!(
-        <Column padding=10.0>
-            <Row padding=10.0>
-                <Button state=self.button, color=self.color.to_rgb(), on_press=TestMessage::FirstButtonClicked>
-                    <Text value="First Button", size=30/>
-                </Button>
-                <Button state=self.second_button, color=self.second_color.to_rgb(), on_press=TestMessage::SecondButtonClicked>
-                    <Text value="Second Button", size=30/>
-                </Button>
-            </Row>
-            <Row padding=10.0>
-                <Text value="First Text", size=30/>
-                <Text value="Second Text", size=30/>
-            </Row>
-            <Row padding=10.0>
-                <TextInput state=self.text_input, placeholder="Enter text", value=&self.text, size=30, on_change=TestMessage::TextInputChanged/>
-                <Text value=&self.text, size=30/>
-            </Row>
-        </Column>
+            <Column padding=10.0>
+                <Row padding=10.0>
+                    <Text value=&self.current_display, size=30/>
+                </Row>
+                <Row padding=10.0>
+                    <Button state=self.button_1, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(1)> <Text value="1", size=30/> </Button>
+                    <Button state=self.button_2, color=BUTTON_BACKGROUND>, on_press=Message::NumberClicked(2), <Text value="2", size=30/> </Button>
+                    <Button state=self.button_3, color=BUTTON_BACKGROUND>, on_press=Message::NumberClicked(3), <Text value="3", size=30/> </Button>
+                    <Button state=self.add_button, color=BUTTON_BACKGROUND, on_press=Message::AddClicked> <Text value="+", size=30/> </Button>
+                </Row>
+                <Row padding=10.0>
+                    <Button state=self.button_4, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(4)> <Text value="4", size=30/> </Button>
+                    <Button state=self.button_5, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(5)> <Text value="5", size=30/> </Button>
+                    <Button state=self.button_6, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(6)> <Text value="6", size=30/> </Button>
+                    <Button state=self.subtract_button, color=BUTTON_BACKGROUND, on_press=Message::SubtractClicked> <Text value="-", size=30/> </Button>
+                </Row>
+                <Row padding=10.0>
+                    <Button state=self.button_7, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(7)> <Text value="7", size=30/> </Button>
+                    <Button state=self.button_8, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(8)> <Text value="8", size=30/> </Button>
+                    <Button state=self.button_9, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(9)> <Text value="9", size=30/> </Button>
+                    <Button state=self.multiply_button, color=BUTTON_BACKGROUND, on_press=Message::MultiplyClicked> <Text value="*", size=30/> </Button>
+                </Row>
+                <Row padding=10.0>
+                    <Button state=self.button_0, color=BUTTON_BACKGROUND, on_press=Message::NumberClicked(0)> <Text value="0", size=30/> </Button>
+                    <Button state=self.equals_button, color=BUTTON_BACKGROUND, on_press=Message::EqualsClicked> <Text value="=", size=30/> </Button>
+                    <Button state=self.clear_button, color=BUTTON_BACKGROUND, on_press=Message::ClearClicked> <Text value="C", size=30/> </Button>
+                    <Button state=self.divide_button, color=BUTTON_BACKGROUND, on_press=Message::DivideClicked> <Text value="/", size=30/> </Button>
+                </Row>
+            </Column>
         )
-
-        //     Column::with_children(vec![
-        //         Row::with_children(vec![
-        //             Button::new(
-        //                 &mut self.button,
-        //                 Text::new("First Button", Some(30)).into(),
-        //                 Some(TestMessage::FirstButtonClicked),
-        //                 self.color.to_rgb(),
-        //             )
-        //             .into(),
-        //             Button::new(
-        //                 &mut self.second_button,
-        //                 Text::new("Second Button", Some(30)).into(),
-        //                 Some(TestMessage::SecondButtonClicked),
-        //                 self.second_color.to_rgb(),
-        //             )
-        //             .into(),
-        //         ])
-        //         .padding(10.0)
-        //         .into(),
-        //         Row::with_children(vec![
-        //             Text::new("First Text", Some(30)).into(),
-        //             Text::new("Second Text", Some(30)).into(),
-        //         ])
-        //         .padding(10.0)
-        //         .into(),
-        //         Row::with_children(vec![
-        //             TextInput::new(
-        //                 &mut self.text_input,
-        //                 "Placeholder",
-        //                 &self.text,
-        //                 TestMessage::TextInputChanged,
-        //             )
-        //             .into(),
-        //             Text::new(&self.text, Some(30)).into(),
-        //         ])
-        //         .padding(10.0)
-        //         .into(),
-        //     ])
-        //     .padding(10.0)
-        //     .into()
     }
 }

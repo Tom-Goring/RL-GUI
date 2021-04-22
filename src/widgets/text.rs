@@ -53,9 +53,10 @@ impl<Message> Widget<Message> for Text {
         let size = self.size.unwrap(); // TODO: clean this unwrap up
         let bounds = limits.max;
 
+        let min_height = renderer.measure_text("1", size as f32, bounds).1;
         let (width, height) = renderer.measure_text(&self.content, size as f32, bounds);
 
-        let size = limits.resolve(Size::new(width, height));
+        let size = limits.resolve(Size::new(width, height.max(min_height)));
 
         Node::new(size)
     }

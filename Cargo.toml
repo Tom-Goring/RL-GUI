@@ -22,6 +22,7 @@ glam = "0.12.0"
 itertools = "0.10.0"
 rl_macro = { path = "./rl-macro"}
 unicode-segmentation = "1.7.1"
+meval = "0.2.0" # for example calculator
 
 [build-dependencies]
 anyhow = "1.0"

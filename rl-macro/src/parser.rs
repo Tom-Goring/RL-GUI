@@ -2,7 +2,7 @@
 use proc_macro::{Delimiter, TokenTree};
 use std::collections::HashMap;
 
-This is for easy toggling of the hundreds of debug prints in the parser.
+// This is for easy toggling of the hundreds of debug prints in the parser.
 macro_rules! println {
     ($($rest:tt)*) => {
         #[cfg(not(debug_assertions))]
@@ -167,7 +167,26 @@ pub fn parse(tokens: &[TokenTree]) -> (Vec<ParseNode>, usize) {
                                     println!("Encountered delimiter, processing...");
                                     match group.delimiter() {
                                         Delimiter::Parenthesis => {
-                                            string = [string, "()".to_string()].join("");
+                                            let mut bracketed_number = Vec::new();
+                                            for token in group.stream() {
+                                                bracketed_number.push(token.to_string());
+                                            }
+                                            string = format!(
+                                                "{}({})",
+                                                string,
+                                                bracketed_number.join("")
+                                            );
+                                        }
+                                        Delimiter::Bracket => {
+                                            let mut bracketed_number = Vec::new();
+                                            for token in group.stream() {
+                                                bracketed_number.push(token.to_string())
+                                            }
+                                            string = format!(
+                                                "{}[{}]",
+                                                string,
+                                                bracketed_number.join("")
+                                            );
                                         }
                                         _ => panic!(
                                             "Encountered unexpected delimiter: {:?}",

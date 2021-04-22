@@ -53,7 +53,7 @@ fn process_node(node: &ParseNode) -> String {
             values
                 .get("color")
                 // .map_or(String::from("None"), |color| format!("Some({})", color)),
-                .expect("Button is missing a background!")
+                .unwrap_or(&String::from("[0.8, 0.8, 0.8]")) // .expect("Button is missing a background!")
         ),
         "Text" => format!(
             "Text::new({}, {}).into()",

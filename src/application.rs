@@ -10,6 +10,7 @@ use crate::element::Element;
 use crate::events::convert_event;
 use crate::layout::limits::Limits;
 use crate::viewport::Viewport;
+use winit::dpi::LogicalSize;
 
 pub trait Application: 'static + Clone {
     type Message;
@@ -25,7 +26,11 @@ pub trait Application: 'static + Clone {
     fn view(&mut self) -> Element<Self::Message>;
 }
 
-pub fn run<App: Application>(event_loop: EventLoop<()>, window: Window) {
+pub fn run<App: Application>(window_title: &str, window_size: (u32, u32)) {
+    let event_loop = EventLoop::new();
+    let window = winit::window::Window::new(&event_loop).unwrap();
+    window.set_title(window_title);
+    window.set_inner_size(LogicalSize::new(window_size.0, window_size.1));
     run_async::<App>(event_loop, window);
 }
 
