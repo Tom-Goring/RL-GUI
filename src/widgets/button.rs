@@ -47,6 +47,16 @@ impl<'a, Message: Clone> Button<'a, Message> {
             border_width: 1.0,
         }
     }
+
+    pub fn min_width(mut self, min: u32) -> Self {
+        self.min_width = min;
+        self
+    }
+
+    pub fn min_height(mut self, min: u32) -> Self {
+        self.min_height = min;
+        self
+    }
 }
 
 impl<'a, Message: Clone> super::Widget<Message> for Button<'a, Message> {
